@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens from PRD section 7: "black like a magician's stage, silver like
+ * the coin trick". Each @theme variable is emitted as a CSS custom property
+ * (e.g. --color-silver-100) and generates Tailwind utilities (text-silver-100).
+ */
+@theme {
+  /* Color */
+  --color-bg: #0a0a0b;
+  --color-surface: #141416;
+  --color-surface-raised: #1c1c1f;
+  --color-border: #2a2a2e;
+  --color-silver-100: #e8e8ec;
+  --color-silver-300: #b8bcc4;
+  --color-silver-500: #8a8f98;
+  --color-truth: #c9d4e0;
+  --color-fib: #e5484d;
+  --color-correct: #46a758;
+
+  /* Brushed metal: logo, primary button, TRUE stamp, streak flame outline */
+  --metal-gradient: linear-gradient(135deg, #f4f5f7 0%, #a8adb6 50%, #6e737c 100%);
+
+  /* Shape */
+  --radius-card: 20px;
+  --card-max-width: 420px;
+  /* Faint top-edge highlight that makes a card read as brushed metal */
+  --shadow-card-edge: inset 0 1px 0 0 rgb(255 255 255 / 0.08);
+
+  /* Type */
+  --tracking-category: 0.08em;
+  --tracking-stamp: 0.2em;
+}
+
+/* Fonts come from next/font at runtime, so map them with `inline`. */
+@theme inline {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+@utility bg-metal {
+  background-image: var(--metal-gradient);
+}
+
+@utility text-metal {
+  background-image: var(--metal-gradient);
+  background-clip: text;
+  color: transparent;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-silver-100);
+    font-family: var(--font-sans);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-truth);
+    outline-offset: 3px;
+  }
+}
