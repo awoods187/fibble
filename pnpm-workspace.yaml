@@ -32,3 +32,4 @@ catalog:
 minimumReleaseAgeExclude:
   - '@types/node@26.6.7'
   - '@anthropic-ai/sdk@1.14.0'
+  - '@types/react@19.3.1'
