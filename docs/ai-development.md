@@ -69,6 +69,14 @@ exist yet.
 | Code, tests, configs, docs, commit messages                         | Claude, reviewed by Andy in the PR         |
 | Fact-checking sample truths                                         | Claude, against pinned Wikipedia revisions |
 
+### What went wrong
+
+The first CI run failed. The `.gitignore` rule `content/`, meant for real puzzle data at the
+repo root, also matched `apps/web/src/lib/content/`, so the ContentSource module was never
+committed. Local checks passed because the files existed on disk. The fix was anchoring the
+rule to `/content/`, and the habit is to run the full check from a **fresh clone** before
+pushing.
+
 ### Lessons
 
 - **A plan-first gate is cheap and catches real problems.** Three of the four issues above
@@ -77,3 +85,5 @@ exist yet.
   broken linting.
 - **Make answer-leak tests structural.** The tests walk every key of the API response and
   search the raw JSON for source URLs, instead of checking a few known fields.
+- **Verify from a fresh clone, not the working tree.** A passing local build proves nothing
+  about files git is silently ignoring.
