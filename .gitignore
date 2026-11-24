@@ -155,3 +155,20 @@ vite.config.ts.timestamp-*
 .nx/cache
 .nx/workspace-data
 .nx/migrate-runs
+
+# --- Fibble ---
+# Environment files (keep the example)
+.env*
+!.env.example
+
+# Build and cache output
+.turbo
+.next
+next-env.d.ts
+
+# Real puzzle data lives in the private fibble-content repo, never here
+content/
+
+# The PRD is kept private; never commit it
+docs/PRD.md
+Fibble*Product Requirements*.md
