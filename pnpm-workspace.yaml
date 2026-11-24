@@ -4,6 +4,9 @@ packages:
   - tools/*
 
 # Single source of truth for shared dependency versions.
+allowBuilds:
+  esbuild: true
+
 catalog:
   '@anthropic-ai/sdk': 1.14.0
   '@eslint/js': 10.0.1
@@ -28,3 +31,4 @@ catalog:
 
 minimumReleaseAgeExclude:
   - '@types/node@26.6.7'
+  - '@anthropic-ai/sdk@1.14.0'

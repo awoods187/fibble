@@ -1,0 +1,152 @@
+{
+  "sample": true,
+  "date": "2026-11-24",
+  "puzzleNumber": 1,
+  "rounds": [
+    {
+      "category": "History",
+      "difficulty": 1,
+      "lieIndex": 1,
+      "lieNote": "Plausible because 19th-century lotteries offered odd prizes and Sweden has a long coastline full of lighthouses; this lottery never existed.",
+      "statements": [
+        {
+          "text": "In 1932, the Australian Army sent soldiers armed with Lewis machine guns to cull emus that were damaging wheat farms in Western Australia.",
+          "expansion": "Farmers who had served in the First World War asked for the machine guns, and the newspapers soon called the operation a war.",
+          "source": {
+            "title": "Emu War",
+            "url": "https://en.wikipedia.org/wiki/Emu_War",
+            "revisionId": 1386571001
+          }
+        },
+        {
+          "text": "In 1859, Sweden held a national lottery whose grand prize was a working lighthouse, and it was won by a farmer who had never seen the sea."
+        },
+        {
+          "text": "The Anglo-Zanzibar War of 1896 lasted somewhere between 38 and 45 minutes, making it the shortest recorded war in history.",
+          "expansion": "It was fought on the morning of 27 August 1896 after a dispute over who would succeed the sultan of Zanzibar.",
+          "source": {
+            "title": "Anglo-Zanzibar War",
+            "url": "https://en.wikipedia.org/wiki/Anglo-Zanzibar_War",
+            "revisionId": 1385536343
+          }
+        }
+      ]
+    },
+    {
+      "category": "Science & Nature",
+      "difficulty": 2,
+      "lieIndex": 0,
+      "lieNote": "Plausible because some animals, like catfish, really do taste through their skin; axolotls do not.",
+      "statements": [
+        {
+          "text": "The axolotl can taste food through the skin on its tail, which helps it find worms buried in the mud of Mexican lakes."
+        },
+        {
+          "text": "Wombats produce cube-shaped droppings, which they arrange to mark their territory and attract mates.",
+          "expansion": "The cubic shape is thought to help the droppings stack without rolling away, and studying it won an Ig Nobel Prize in 2019.",
+          "source": {
+            "title": "Wombat",
+            "url": "https://en.wikipedia.org/wiki/Wombat",
+            "revisionId": 1387067450
+          }
+        },
+        {
+          "text": "One rotation of Venus on its axis takes 243 Earth days, which is longer than the 225 days it takes to orbit the Sun.",
+          "expansion": "Venus also spins in the opposite direction to most planets, including Earth.",
+          "source": {
+            "title": "Venus",
+            "url": "https://en.wikipedia.org/wiki/Venus",
+            "revisionId": 1387525457
+          }
+        }
+      ]
+    },
+    {
+      "category": "Geography & Places",
+      "difficulty": 3,
+      "lieIndex": 2,
+      "lieNote": "Plausible because small Alpine villages really do have unusual addressing rules; this village is invented.",
+      "statements": [
+        {
+          "text": "Bir Tawil, an area of desert about 2,060 square kilometres on the border between Egypt and Sudan, is claimed by neither country.",
+          "expansion": "Each country prefers a border line that gives it the neighbouring Halaib Triangle, which is far more valuable.",
+          "source": {
+            "title": "Bir Tawil",
+            "url": "https://en.wikipedia.org/wiki/Bir_Tawil",
+            "revisionId": 1384309829
+          }
+        },
+        {
+          "text": "The Belgian municipality of Baarle-Hertog is made up of 26 separate parcels of land, and 22 of them sit entirely inside the Netherlands.",
+          "expansion": "Some of those Belgian pieces contain small Dutch enclaves of their own.",
+          "source": {
+            "title": "Baarle-Hertog",
+            "url": "https://en.wikipedia.org/wiki/Baarle-Hertog",
+            "revisionId": 1375646116
+          }
+        },
+        {
+          "text": "A village in the Swiss Alps has no house numbers at all, because its only street loops back on itself and has no official starting point."
+        }
+      ]
+    },
+    {
+      "category": "Sports & Games",
+      "difficulty": 3,
+      "lieIndex": 2,
+      "lieNote": "Plausible because early Olympics included many unusual events and demonstration sports; kite flying was never one of them.",
+      "statements": [
+        {
+          "text": "From 1912 to 1948, the Olympics awarded medals for works of art in painting, music, literature, sculpture and architecture.",
+          "expansion": "Every entry had to be inspired by sport, and the events were nicknamed the Pentathlon of the Muses.",
+          "source": {
+            "title": "Art competitions at the Summer Olympics",
+            "url": "https://en.wikipedia.org/wiki/Art_competitions_at_the_Summer_Olympics",
+            "revisionId": 1367811902
+          }
+        },
+        {
+          "text": "Tug of war was an Olympic event at every Summer Games from 1900 to 1920 before it was dropped from the program.",
+          "expansion": "Teams had six pullers in 1900 and eight from 1908 onward.",
+          "source": {
+            "title": "Tug of war at the Summer Olympics",
+            "url": "https://en.wikipedia.org/wiki/Tug_of_war_at_the_Summer_Olympics",
+            "revisionId": 1368928562
+          }
+        },
+        {
+          "text": "Competitive kite flying was a demonstration sport at the 1908 London Olympics, judged on the height and steadiness of each kite."
+        }
+      ]
+    },
+    {
+      "category": "Arts & Entertainment",
+      "difficulty": 4,
+      "lieIndex": 1,
+      "lieNote": "Plausible because early film audiences loved novelty tricks like reversed footage; no cinema ever made it a rule.",
+      "statements": [
+        {
+          "text": "In 1911, a former Louvre glazier stole the Mona Lisa after blending in with museum staff by wearing one of their white work smocks.",
+          "expansion": "Vincenzo Peruggia hid the painting in his Paris apartment and was not arrested until December 1913.",
+          "source": {
+            "title": "Vincenzo Peruggia",
+            "url": "https://en.wikipedia.org/wiki/Vincenzo_Peruggia",
+            "revisionId": 1386804990
+          }
+        },
+        {
+          "text": "The first public cinema in Lisbon showed every film twice, once forward and once in reverse, because its audiences demanded it."
+        },
+        {
+          "text": "John Cage's 1952 piece 4′33″ instructs performers not to play their instruments at all during any of its three movements.",
+          "expansion": "Its premiere caused shock and led musicologists to question whether the piece counted as music at all.",
+          "source": {
+            "title": "4′33″",
+            "url": "https://en.wikipedia.org/wiki/4%E2%80%B233%E2%80%B3",
+            "revisionId": 1383099023
+          }
+        }
+      ]
+    }
+  ]
+}
