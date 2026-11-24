@@ -1,0 +1,34 @@
+{
+  "version": "example-v1",
+  "items": [
+    {
+      "id": "truth-emu-war",
+      "category": "History",
+      "text": "In 1932, the Australian Army sent soldiers armed with Lewis machine guns to cull emus that were damaging wheat farms in Western Australia.",
+      "expected": "truth",
+      "expectedJudgeLabel": "supported",
+      "source": {
+        "title": "Emu War",
+        "url": "https://en.wikipedia.org/wiki/Emu_War",
+        "revisionId": 1386571001
+      },
+      "notes": "Tricky truth: sounds invented, is well sourced."
+    },
+    {
+      "id": "lie-swedish-lighthouse-lottery",
+      "category": "History",
+      "text": "In 1859, Sweden held a national lottery whose grand prize was a working lighthouse, and it was won by a farmer who had never seen the sea.",
+      "expected": "lie",
+      "expectedJudgeLabel": "no-evidence",
+      "notes": "Fully invented lie built from real texture."
+    },
+    {
+      "id": "lie-near-miss-zanzibar",
+      "category": "History",
+      "text": "The Anglo-Zanzibar War of 1896 lasted somewhere between 8 and 12 hours, making it one of the shortest recorded wars in history.",
+      "expected": "lie",
+      "expectedJudgeLabel": "contradicted",
+      "notes": "Near-miss: a one-detail edit of a real fact. The generator must never write these; the judge must catch them."
+    }
+  ]
+}
