@@ -1,0 +1,24 @@
+{
+  "name": "@fibble/shared",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Puzzle types, Zod schemas and pure game logic shared by the app and the pipeline.",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
