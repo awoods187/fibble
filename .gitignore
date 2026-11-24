@@ -167,7 +167,7 @@ vite.config.ts.timestamp-*
 next-env.d.ts
 
 # Real puzzle data lives in the private fibble-content repo, never here
-content/
+/content/
 
 # The PRD is kept private; never commit it
 docs/PRD.md
