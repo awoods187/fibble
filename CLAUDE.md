@@ -67,7 +67,10 @@ Scope to one package with `pnpm --filter @fibble/web test` (or `@fibble/shared`,
    current version with `npm view <pkg> version` instead of guessing. Ask before adding one.
 10. **Git:** work on a branch, never push to `main`, use Conventional Commits
     (`feat:`, `fix:`, `chore:`, `docs:`, `test:`, `ci:`), and add a session entry to
-    `docs/ai-development.md` for significant LLM-assisted work.
+    `docs/ai-development.md` for significant LLM-assisted work. `main` is protected: a PR can
+    merge only after the "Lint, typecheck, test, validate, build" check passes, admins included.
+    Dependabot opens grouped update PRs on Mondays (`.github/dependabot.yml`); treat them
+    like any other PR.
 11. **Be polite to Wikipedia.** Every Wikipedia and Wikidata call goes through `WikiClient`
     (`packages/pipeline/src/harvest/wiki-client.ts`): descriptive User-Agent, one request at a
     time, `maxlag`, backoff and an on-disk cache. Tests use a fake `fetch`, never the network.

@@ -1,0 +1,68 @@
+# Dependabot version updates. Security updates are on as well (repo settings) and
+# always open separate PRs, ignoring the schedule, grouping and cooldown below.
+# Every Dependabot PR must pass the required CI check before it can merge.
+# Docs: https://docs.github.com/en/code-security/dependabot
+
+version: 2
+updates:
+  # npm ecosystem covers pnpm: it reads pnpm-workspace.yaml and pnpm-lock.yaml.
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'America/New_York'
+    open-pull-requests-limit: 5
+    # pnpm refuses packages published in the last day (minimumReleaseAge), so
+    # don't propose anything younger than that. Also skips most bad releases.
+    cooldown:
+      default-days: 3
+    groups:
+      # Next.js and React move together; never bump one without the others.
+      next-react:
+        patterns:
+          - 'next'
+          - 'eslint-config-next'
+          - 'react'
+          - 'react-dom'
+          - '@types/react'
+          - '@types/react-dom'
+      # Everything else: one PR for all minor and patch bumps.
+      minor-and-patch:
+        update-types:
+          - 'minor'
+          - 'patch'
+    ignore:
+      # typescript-eslint 8.x supports TypeScript < 6.1 (ADR 0001). Lift this when
+      # typescript-eslint supports a newer TypeScript.
+      - dependency-name: 'typescript'
+        versions: ['>=6.1.0']
+      # @types/node tracks the Node LTS line in .nvmrc (26); bump it with Node.
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+    commit-message:
+      prefix: 'chore'
+      include: 'scope' # -> "chore(deps): ..." and "chore(deps-dev): ..."
+    labels:
+      - 'dependencies'
+      - 'automated'
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'America/New_York'
+    open-pull-requests-limit: 3
+    groups:
+      actions:
+        patterns: ['*']
+    commit-message:
+      prefix: 'ci'
+      include: 'scope' # -> "ci(deps): ..."
+    labels:
+      - 'ci'
+      - 'dependencies'
+      - 'automated'
