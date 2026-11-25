@@ -75,14 +75,20 @@ export function buildRatingSet(
   return { setId, items, key };
 }
 
-/** The file the page downloads. */
+export const FUN_LEVELS = ['boring', 'fine', 'great'] as const;
+export type FunLevel = (typeof FUN_LEVELS)[number];
+
+/** The file the page downloads. Version 1 files (believability only) have no `fun`. */
 export const RatingsFileSchema = z.object({
   setId: z.string(),
   ratedAt: z.string(),
   ratings: z.array(
     z.object({
       id: z.string(),
+      /** Believability: could a player believe it's true? */
       plausibility: z.int().min(1).max(5),
+      /** Would it make a good card in the game, whatever its truth? */
+      fun: z.enum(FUN_LEVELS).optional(),
       /** The rater already knew whether it was true, so the score isn't a blind judgment. */
       knew: z.boolean(),
     }),
@@ -100,16 +106,31 @@ export function embedJson(value: unknown): string {
     .replace(/\u2029/g, '\\u2029');
 }
 
-const SCALE = [
-  [1, 'Obviously invented', 'Impossible, absurd, or against common knowledge'],
-  [2, 'Hard to believe', 'Needs something very unlikely, or the wording gives it away'],
-  [3, 'Believable, but…', 'One detail feels too neat or convenient'],
-  [4, 'Surprising but real-sounding', 'The kind of odd thing that really happens'],
-  [5, 'Completely believable', 'Reads like an ordinary encyclopedia fact'],
+/**
+ * Two separate questions (v1 mixed them, and raters used "believable" to mean
+ * "good for the game"). Believability is only about whether it sounds true.
+ */
+export const BELIEVE_SCALE = [
+  [1, 'Obviously made up'],
+  [2, 'I doubt it'],
+  [3, 'Could go either way'],
+  [4, 'Probably true'],
+  [5, 'Definitely sounds true'],
+] as const;
+
+export const FUN_SCALE = [
+  ['boring', 'Boring', 'B', 'A shrug, true or not'],
+  ['fine', 'Fine', 'F', 'Would do as a card'],
+  ['great', 'Great', 'G', '"No way!" Players would share it'],
 ] as const;
 
 export function buildRatingPage(set: RatingSet): string {
-  const data = embedJson({ setId: set.setId, items: set.items, scale: SCALE });
+  const data = embedJson({
+    setId: set.setId,
+    items: set.items,
+    believe: BELIEVE_SCALE,
+    fun: FUN_SCALE,
+  });
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -117,9 +138,9 @@ export function buildRatingPage(set: RatingSet): string {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; form-action 'none'; base-uri 'none'">
 <meta name="robots" content="noindex">
-<title>Fibble · rate believability</title>
+<title>Fibble · rate statements</title>
 <style>
-  :root { --bg:#0a0a0b; --surface:#141416; --raised:#1c1c1f; --border:#2a2a2e; --s100:#e8e8ec; --s300:#b8bcc4; --s500:#8a8f98; --fib:#e5484d; --ok:#46a758;
+  :root { --bg:#0a0a0b; --surface:#141416; --raised:#1c1c1f; --border:#2a2a2e; --s100:#e8e8ec; --s300:#b8bcc4; --s500:#8a8f98;
     --metal:linear-gradient(135deg,#f4f5f7 0%,#a8adb6 50%,#6e737c 100%); color-scheme:dark; }
   * { box-sizing:border-box; }
   body { margin:0; min-height:100vh; background:var(--bg); color:var(--s100); font:16px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; display:flex; justify-content:center; }
@@ -130,15 +151,20 @@ export function buildRatingPage(set: RatingSet): string {
   .bar { height:3px; background:var(--border); border-radius:2px; margin-bottom:24px; overflow:hidden; }
   .bar > div { height:100%; background:var(--s300); transition:width .2s; }
   .intro { color:var(--s300); font-size:14px; margin:0 0 20px; }
-  .card { background:var(--surface); border:1px solid var(--border); border-radius:20px; box-shadow:inset 0 1px 0 0 rgb(255 255 255 / .08); padding:28px 24px; min-height:180px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:20px; box-shadow:inset 0 1px 0 0 rgb(255 255 255 / .08); padding:28px 24px; min-height:160px; }
   .cat { text-transform:uppercase; letter-spacing:.08em; font-size:12px; color:var(--s500); margin-bottom:12px; }
   .text { font-size:20px; line-height:1.45; }
-  .scale { display:grid; gap:8px; margin-top:20px; }
-  .opt { display:grid; grid-template-columns:32px 1fr; gap:12px; align-items:center; text-align:left; width:100%; padding:12px 14px; background:var(--raised); color:var(--s100); border:1px solid var(--border); border-radius:12px; font:inherit; cursor:pointer; }
+  fieldset { border:0; margin:20px 0 0; padding:0; }
+  legend { font-size:14px; color:var(--s300); margin-bottom:8px; padding:0; }
+  legend strong { color:var(--s100); }
+  .seg { display:grid; gap:6px; }
+  .seg.five { grid-template-columns:repeat(5,1fr); }
+  .seg.three { grid-template-columns:repeat(3,1fr); }
+  .opt { padding:10px 6px; background:var(--raised); color:var(--s100); border:1px solid var(--border); border-radius:12px; font:inherit; font-size:13px; line-height:1.25; cursor:pointer; text-align:center; }
+  .opt b { display:block; font-size:18px; font-variant-numeric:tabular-nums; margin-bottom:2px; }
+  .opt small { display:block; color:var(--s500); font-size:11px; margin-top:2px; }
   .opt:hover, .opt:focus-visible { border-color:var(--s500); outline:none; }
-  .opt[aria-pressed="true"] { border-color:var(--s100); background:#26262a; }
-  .num { display:grid; place-items:center; width:32px; height:32px; border-radius:8px; background:var(--border); font-weight:600; font-variant-numeric:tabular-nums; }
-  .opt small { display:block; color:var(--s500); font-size:13px; }
+  .opt[aria-pressed="true"] { border-color:var(--s100); background:#2a2a2f; }
   .row { display:flex; justify-content:space-between; align-items:center; margin-top:16px; gap:12px; flex-wrap:wrap; }
   label.knew { color:var(--s300); font-size:14px; display:flex; gap:8px; align-items:center; cursor:pointer; }
   .nav button, .done button { background:transparent; color:var(--s300); border:1px solid var(--border); border-radius:10px; padding:8px 14px; font:inherit; font-size:14px; cursor:pointer; }
@@ -151,83 +177,94 @@ export function buildRatingPage(set: RatingSet): string {
 </head>
 <body>
 <main>
-  <header><h1>Fibble · believability</h1><span class="progress" id="progress"></span></header>
+  <header><h1>Fibble · rate statements</h1><span class="progress" id="progress"></span></header>
   <div class="bar"><div id="bar"></div></div>
-  <p class="intro">Some of these are true and some are invented. Rate each one as a player who hasn't seen it before: <strong>could a well-read adult believe it?</strong> Don't look anything up.</p>
+  <p class="intro">Some of these are true and some are invented. Answer two separate questions for each, without looking anything up. <strong>Believable?</strong> is only about whether it sounds true. <strong>Good for the game?</strong> is whether it would make a fun card, true or not.</p>
   <section id="view"></section>
-  <p class="hint"><kbd>1</kbd>–<kbd>5</kbd> rate · <kbd>K</kbd> I already knew · <kbd>←</kbd> <kbd>→</kbd> move · progress saves in this browser</p>
+  <p class="hint"><kbd>1</kbd>–<kbd>5</kbd> believable · <kbd>B</kbd> <kbd>F</kbd> <kbd>G</kbd> boring / fine / great · <kbd>K</kbd> I already knew · <kbd>←</kbd> <kbd>→</kbd> move · progress saves in this browser</p>
 </main>
 <script id="data" type="application/json">${data}</script>
 <script>
 (() => {
-  const { setId, items, scale } = JSON.parse(document.getElementById('data').textContent);
+  const { setId, items, believe, fun } = JSON.parse(document.getElementById('data').textContent);
   const storeKey = 'fibble-' + setId;
   const saved = JSON.parse(localStorage.getItem(storeKey) || '{}');
   const ratings = saved.ratings || {};
   let i = Math.min(saved.i || 0, items.length);
   const view = document.getElementById('view');
   const save = () => localStorage.setItem(storeKey, JSON.stringify({ ratings, i }));
-  const rated = () => Object.values(ratings).filter((r) => r.plausibility).length;
+  const complete = (r) => Boolean(r && r.plausibility && r.fun);
+  const done = () => items.filter((it) => complete(ratings[it.id])).length;
   const el = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); e.append(...kids); return e; };
 
   function render() {
-    document.getElementById('progress').textContent = rated() + ' / ' + items.length + ' rated';
-    document.getElementById('bar').style.width = (100 * rated() / items.length) + '%';
+    document.getElementById('progress').textContent = done() + ' / ' + items.length + ' rated';
+    document.getElementById('bar').style.width = (100 * done() / items.length) + '%';
     view.replaceChildren(i >= items.length ? doneView() : cardView(items[i]));
+  }
+
+  function choice(label, value, current, onPick) {
+    const b = el('button', { className: 'opt', type: 'button' }, ...label);
+    b.setAttribute('aria-pressed', String(current === value));
+    b.addEventListener('click', () => onPick(value));
+    return b;
   }
 
   function cardView(item) {
     const r = ratings[item.id] || {};
-    const opts = scale.map(([n, title, desc]) => {
-      const b = el('button', { className: 'opt', type: 'button' }, el('span', { className: 'num' }, String(n)), el('span', {}, title, el('small', {}, desc)));
-      b.setAttribute('aria-pressed', String(r.plausibility === n));
-      b.addEventListener('click', () => rate(n));
-      return b;
-    });
+    const believeOpts = believe.map(([n, title]) => choice([el('b', {}, String(n)), title], n, r.plausibility, (v) => set('plausibility', v)));
+    const funOpts = fun.map(([value, title, keyName, desc]) => choice([el('b', {}, title), el('small', {}, desc)], value, r.fun, (v) => set('fun', v)));
     const knew = el('input', { type: 'checkbox', checked: Boolean(r.knew) });
     knew.addEventListener('change', () => { ratings[item.id] = { ...(ratings[item.id] || {}), knew: knew.checked }; save(); });
     const prev = el('button', { type: 'button', disabled: i === 0 }, '← Back');
     prev.addEventListener('click', () => go(-1));
-    const next = el('button', { type: 'button' }, 'Skip →');
+    const next = el('button', { type: 'button' }, complete(r) ? 'Next →' : 'Skip →');
     next.addEventListener('click', () => go(1));
+    const legend = (q, hint) => { const l = el('legend', {}); l.append(el('strong', {}, q), ' ' + hint); return l; };
     return el('div', {},
       el('article', { className: 'card' }, el('div', { className: 'cat' }, item.category), el('div', { className: 'text' }, item.text)),
-      el('div', { className: 'scale', role: 'group', ariaLabel: 'Believability, 1 to 5' }, ...opts),
+      el('fieldset', {}, legend('Believable?', 'Does it sound true?'), el('div', { className: 'seg five' }, ...believeOpts)),
+      el('fieldset', {}, legend('Good for the game?', 'True or not, would it make a fun card?'), el('div', { className: 'seg three' }, ...funOpts)),
       el('div', { className: 'row' }, el('label', { className: 'knew' }, knew, 'I already knew whether this is true'), el('div', { className: 'nav' }, prev, ' ', next)));
   }
 
   function doneView() {
-    const missing = items.length - items.filter((it) => ratings[it.id] && ratings[it.id].plausibility).length;
+    const missing = items.length - done();
     const dl = el('button', { className: 'primary', type: 'button' }, 'Download ratings');
     dl.addEventListener('click', download);
     const back = el('button', { type: 'button' }, '← Review');
     back.addEventListener('click', () => { i = items.length - 1; save(); render(); });
     return el('div', { className: 'card done' },
-      el('p', {}, missing ? missing + ' statement' + (missing === 1 ? '' : 's') + ' skipped. You can go back, or download what you have.' : 'All rated. Thank you.'),
+      el('p', {}, missing ? missing + ' statement' + (missing === 1 ? '' : 's') + ' not fully rated. You can go back, or download what you have.' : 'All rated. Thank you.'),
       el('p', {}, dl), el('p', {}, back));
   }
 
-  function rate(n) {
+  // Record one answer; move on once both questions for this card are answered.
+  function set(field, value) {
     const item = items[i];
-    ratings[item.id] = { ...(ratings[item.id] || {}), plausibility: n };
-    i++; save(); render();
+    ratings[item.id] = { ...(ratings[item.id] || {}), [field]: value };
+    if (complete(ratings[item.id])) i++;
+    save(); render();
   }
   function go(d) { i = Math.max(0, Math.min(items.length, i + d)); save(); render(); }
 
   function download() {
     const out = { setId, ratedAt: new Date().toISOString(), ratings: items
       .filter((it) => ratings[it.id] && ratings[it.id].plausibility)
-      .map((it) => ({ id: it.id, plausibility: ratings[it.id].plausibility, knew: Boolean(ratings[it.id].knew) })) };
+      .map((it) => ({ id: it.id, plausibility: ratings[it.id].plausibility, ...(ratings[it.id].fun ? { fun: ratings[it.id].fun } : {}), knew: Boolean(ratings[it.id].knew) })) };
     const a = el('a', { href: URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' })), download: setId + '-ratings.json' });
     document.body.append(a); a.click(); a.remove();
   }
 
+  const funKeys = Object.fromEntries(fun.map(([value, , keyName]) => [keyName.toLowerCase(), value]));
   document.addEventListener('keydown', (e) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
-    if (i < items.length && /^[1-5]$/.test(e.key)) rate(Number(e.key));
+    const k = e.key.toLowerCase();
+    if (i < items.length && /^[1-5]$/.test(k)) set('plausibility', Number(k));
+    else if (i < items.length && funKeys[k]) set('fun', funKeys[k]);
     else if (e.key === 'ArrowLeft') go(-1);
     else if (e.key === 'ArrowRight') go(1);
-    else if ((e.key === 'k' || e.key === 'K') && i < items.length) { const box = view.querySelector('input[type=checkbox]'); box.checked = !box.checked; box.dispatchEvent(new Event('change')); }
+    else if (k === 'k' && i < items.length) { const box = view.querySelector('input[type=checkbox]'); box.checked = !box.checked; box.dispatchEvent(new Event('change')); }
   });
   render();
 })();

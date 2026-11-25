@@ -102,9 +102,9 @@ describe('ratingReport', () => {
     setId: set.setId,
     ratedAt: '2026-11-25T12:00:00Z',
     ratings: [
-      { id: idOf('dyk-1'), plausibility: 4, knew: false },
-      { id: idOf('dyk-2'), plausibility: 5, knew: true },
-      { id: idOf('lie-abc'), plausibility: 4, knew: false },
+      { id: idOf('dyk-1'), plausibility: 4, fun: 'great', knew: false },
+      { id: idOf('dyk-2'), plausibility: 5, fun: 'boring', knew: true },
+      { id: idOf('lie-abc'), plausibility: 4, fun: 'fine', knew: false },
       { id: idOf('lie-def'), plausibility: 2, knew: false },
     ],
   });
@@ -132,5 +132,39 @@ describe('ratingReport', () => {
       modelOnlyPass: 0,
       neitherPass: 1,
     });
+  });
+
+  it('reports "good for the game" separately, counting already-known statements too', () => {
+    expect(report.fun.truths).toMatchObject({
+      rated: 2,
+      great: 1,
+      boring: 1,
+      greatRate: 0.5,
+      boringRate: 0.5,
+    });
+    expect(report.fun.lies).toMatchObject({ rated: 1, fine: 1, greatRate: 0 });
+  });
+
+  it('still reads version 1 files, which have no fun rating', () => {
+    const v1 = RatingsFileSchema.parse({
+      setId: set.setId,
+      ratedAt: 'x',
+      ratings: [{ id: idOf('dyk-1'), plausibility: 3, knew: false }],
+    });
+    expect(ratingReport(set.key, v1, new Map()).fun.truths.rated).toBe(0);
+  });
+});
+
+describe('two-question page', () => {
+  const html = buildRatingPage(buildRatingSet(TRUTHS, LIES, 'seed-1'));
+
+  it('asks believability and game fit as separate questions', () => {
+    expect(html).toContain('Believable?');
+    expect(html).toContain('Good for the game?');
+    for (const label of ['Obviously made up', 'Definitely sounds true', 'Boring', 'Great']) {
+      expect(html).toContain(label);
+    }
+    // The v1 label that mixed believability with being interesting is gone.
+    expect(html).not.toContain('Surprising but real-sounding');
   });
 });
