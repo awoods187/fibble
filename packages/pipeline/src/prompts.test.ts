@@ -60,4 +60,10 @@ describe('example-v1 prompts', () => {
       expect(`${p.system}${user}`).not.toMatch(/\{\{/);
     },
   );
+
+  it('generate-lies renders with every variable it uses', async () => {
+    const p = await loadPrompt(EXAMPLE_PROMPTS_DIR, 'generate-lies');
+    const vars = { category: 'History', truth_1: 'a', truth_2: 'b', count: '5' };
+    expect(`${render(p.system, vars)}${render(p.user, vars)}`).not.toMatch(/\{\{/);
+  });
 });

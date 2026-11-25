@@ -12,7 +12,7 @@ export interface CheckFailure {
 }
 
 /** Words that hedge a claim. A truth in Fibble is stated plainly or not at all. */
-const HEDGING =
+export const HEDGING_PATTERN =
   /\b(reportedly|allegedly|supposedly|apparently|purportedly|rumou?red|it is (said|believed|thought)|some (say|believe)|may have|might have|is said to|was said to)\b/i;
 
 export const MIN_SCORE = 4;
@@ -70,7 +70,7 @@ export function checkDraft(draft: RewordDraft, evidence: string, hook: string): 
     ['statement', text],
     ['expansion', draft.expansion],
   ] as const) {
-    const hedge = HEDGING.exec(value);
+    const hedge = HEDGING_PATTERN.exec(value);
     if (hedge)
       failures.push({ reason: 'hedging', detail: `Hedging word in ${field}: "${hedge[0]}"` });
   }

@@ -20,7 +20,8 @@
     "harvest": "pnpm --filter @fibble/pipeline harvest",
     "check:secrets": "pnpm --filter @fibble/security check",
     "reword": "pnpm --filter @fibble/pipeline reword",
-    "verify": "pnpm --filter @fibble/pipeline verify"
+    "verify": "pnpm --filter @fibble/pipeline verify",
+    "generate-lies": "pnpm --filter @fibble/pipeline generate-lies"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",

@@ -59,15 +59,7 @@ export interface GenerateLiesInput {
   count: number;
 }
 
-export interface LieCandidate {
-  id: string;
-  category: Category;
-  text: string;
-  /** The "why it sounded true" note. */
-  lieNote: string;
-  basedOnTruthIds: [string, string];
-  trace: Trace;
-}
+export type { LieCandidate } from './generate/schemas';
 
 /* ---------- Stage 4: verify the lie is false ---------- */
 
