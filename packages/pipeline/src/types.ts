@@ -1,4 +1,4 @@
-import type { Category, LieIndex, Round, Source } from '@fibble/shared';
+import type { Category, LieIndex, Round } from '@fibble/shared';
 import type { z } from 'zod';
 import type {
   CandidateSchema,
@@ -7,6 +7,7 @@ import type {
   StageNameSchema,
   TraceSchema,
 } from './schemas';
+import type { RewordedTruthSchema } from './reword/schemas';
 
 /**
  * Typed contracts for the 7 pipeline stages in PRD section 5.
@@ -46,19 +47,7 @@ export type Candidate = z.infer<typeof CandidateSchema>;
 
 /* ---------- Stage 2: select and reword ---------- */
 
-export interface RewordedTruth {
-  candidateId: string;
-  category: Category;
-  /** House style, 80 to 160 characters, our own words. */
-  text: string;
-  expansion: string;
-  source: Source;
-  supportingSentence: string;
-  entities: string[];
-  scores: { surprise: number; verifiability: number };
-  entailment: { supported: boolean; unsupportedDetails: string[] };
-  trace: Trace;
-}
+export type RewordedTruth = z.infer<typeof RewordedTruthSchema>;
 
 /* ---------- Stage 3: generate lies ---------- */
 
