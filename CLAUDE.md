@@ -94,3 +94,6 @@ Scope to one package with `pnpm --filter @fibble/web test` (or `@fibble/shared`,
     `Budget`; tests use a fake client and never call the API. Paid commands take `--budget`
     and support `--dry-run`. Ask before a real run, and run it from `fibble-content`: its
     output is unreleased puzzle material, so only numbers go in public PRs and logs.
+14. **Keep `docs/STATUS.md` current.** It's the one place that says where the project is:
+    phase, stages built, latest measurements, open problems, roadmap, and what's waiting on
+    Andy. Update it in every PR that changes any of those. Numbers only, never real content.

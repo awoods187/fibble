@@ -109,6 +109,8 @@ working on the pipeline.
 revision, evidence text and a living-person flag. It calls only free Wikipedia and Wikidata
 APIs, politely, and caches every response in `.cache/wikipedia/`.
 
+**Where things stand:** [docs/STATUS.md](docs/STATUS.md).
+
 ## Repo layout
 
 ```
