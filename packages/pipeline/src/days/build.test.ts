@@ -16,20 +16,31 @@ const NOW = new Date('2026-11-25T12:00:00Z');
 function approved(dayIdx: number, catIdx: number): ApprovedRound {
   // The placeholder days cite one article everywhere; give each truth its own, as real rounds do.
   const base = DAYS[dayIdx]!.rounds[catIdx]!;
+  // Placeholder texts are near-identical; give each statement its own words (80-160 chars).
+  const words = (n: string) =>
+    ['amber', 'brine', 'cobalt', 'delta', 'ember', 'fjord'].map((w) => `${w}${n}`).join(' ');
   const round: Round = {
     ...base,
-    statements: base.statements.map((st, i) =>
-      st.source
-        ? {
-            ...st,
-            source: {
-              ...st.source,
-              title: `${st.source.title} ${dayIdx}${catIdx}${i}`,
-              url: `${st.source.url}_${dayIdx}${catIdx}${i}`,
-            },
-          }
-        : st,
-    ),
+    statements: base.statements
+      .map((st, i) => ({
+        ...st,
+        text: `Fixture ${dayIdx}${catIdx}${i}: ${words(`${dayIdx}${catIdx}${i}`)} and more.`.padEnd(
+          90,
+          '.',
+        ),
+      }))
+      .map((st, i) =>
+        st.source
+          ? {
+              ...st,
+              source: {
+                ...st.source,
+                title: `${st.source.title} ${dayIdx}${catIdx}${i}`,
+                url: `${st.source.url}_${dayIdx}${catIdx}${i}`,
+              },
+            }
+          : st,
+      ),
   };
   return {
     roundId: `r-${dayIdx}-${catIdx}`,
@@ -55,7 +66,7 @@ const input = (over: Partial<Parameters<typeof buildDays>[0]> = {}) =>
   }) as Parameters<typeof buildDays>[0];
 
 describe('buildDays', () => {
-  it('builds full days in the fixed category order, numbered from the first bank day', () => {
+  it('builds full days in the fixed category order, today first, numbered from launch', () => {
     const { days, stoppedBecause } = buildDays(input());
     expect(days).toHaveLength(3);
     for (const d of days) {
@@ -63,16 +74,30 @@ describe('buildDays', () => {
       expect(d.puzzle.rounds.map((r) => r.category)).toEqual(CATEGORIES.map((c) => c.name));
     }
     expect(days.map((d) => [d.puzzle.date, d.puzzle.puzzleNumber])).toEqual([
-      ['2026-11-26', 1],
-      ['2026-11-27', 2],
-      ['2026-11-28', 3],
+      ['2026-11-25', 1],
+      ['2026-11-26', 2],
+      ['2026-11-27', 3],
     ]);
     expect(stoppedBecause).toMatch(/ran out/);
   });
 
-  it('continues after the existing bank and numbers from its first day', () => {
+  it('continues after the existing bank, numbered from the launch date', () => {
     const { days } = buildDays(input({ existingDates: ['2026-12-01', '2026-12-02'], count: 1 }));
-    expect(days[0]?.puzzle).toMatchObject({ date: '2026-12-03', puzzleNumber: 3 });
+    expect(days[0]?.puzzle).toMatchObject({ date: '2026-12-03', puzzleNumber: 9 });
+  });
+
+  it('refuses to build a day before launch', () => {
+    expect(() => buildDays(input({ start: '2026-11-20' }))).toThrow(/before launch/);
+  });
+
+  it('skips a round whose statement nearly repeats one already in the bank', () => {
+    const repeat = ALL[0]!.round.statements[0]!.text;
+    const { leftover } = buildDays(input({ bankTexts: [repeat] }));
+    expect(leftover).toContainEqual({
+      roundId: 'r-0-0',
+      category: 'History',
+      reason: 'a statement is too similar to one in the bank',
+    });
   });
 
   it('never reuses an article already in the bank', () => {
@@ -134,6 +159,8 @@ describe('helpers', () => {
       '2026-11-28',
       '2026-11-29',
     ]);
-    expect(nextDates([], undefined, NOW, 1)).toEqual(['2026-11-26']);
+    // Empty bank: today, but never before launch.
+    expect(nextDates([], undefined, NOW, 1)).toEqual(['2026-11-25']);
+    expect(nextDates([], undefined, new Date('2026-11-01T00:00:00Z'), 1)).toEqual(['2026-11-25']);
   });
 });
