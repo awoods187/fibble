@@ -293,10 +293,10 @@ describe('helpers', () => {
     expect(formatEvidence([])).toBe('(no results)');
   });
 
-  it('passes only unsupported lies at or above the plausibility floor (2)', () => {
+  it('passes only unsupported lies at or above the plausibility floor (3)', () => {
     expect(passes('contradicted', 3)).toBe(true);
     expect(passes('no-evidence', 5)).toBe(true);
-    expect(passes('no-evidence', 2)).toBe(true);
+    expect(passes('no-evidence', 2)).toBe(false);
     expect(passes('no-evidence', 1)).toBe(false);
     expect(passes('supported', 5)).toBe(false);
   });

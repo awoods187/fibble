@@ -128,10 +128,10 @@ describe('ratingReport', () => {
     expect(report).toMatchObject({
       compared: 2,
       meanModelMinusHuman: -0.5,
-      bothPass: 1,
-      humanOnlyPass: 0,
-      modelOnlyPass: 1,
-      neitherPass: 0,
+      bothPass: 0,
+      humanOnlyPass: 1,
+      modelOnlyPass: 0,
+      neitherPass: 1,
     });
   });
 
