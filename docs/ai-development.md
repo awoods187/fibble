@@ -273,3 +273,26 @@ the real test is Opus-written lies in stage 3.
 - **Writing lies is hard to get right.** While drafting the golden set, several "invented"
   facts turned out to be true (rooftop bees at the Paris Opéra, Satie's identical suits).
 - **Don't tune a metric against data you wrote yourself.**
+
+---
+
+## Session 6 (2026-11-25): Stage 3 (generate lies) and gate 2
+
+**Model:** Claude Opus 5.5 in Claude Code.
+**Branch:** `feat/pipeline-generate-lies`.
+
+Claude built stage 3 as planned: Opus writes 5 lies per truth pair, then free code checks,
+then straight into stage 4 under one budget, with a gate 2 report. On the first run, all 6
+rounds got a usable lie, no generated lie was secretly true, and a round cost about $0.15.
+Details are in ADR 0008.
+
+Before that, a dry run in the private repo showed its production prompt folder had no stage 4
+prompts, so `pnpm verify` there would have failed. The fix went into the open pinned-version
+PR. A dry run costs nothing and caught a real gap.
+
+### Lessons
+
+- **A believable lie is a human judgment.** Two rounds of prompt changes didn't stop the model
+  rater from preferring facts it recognizes. The honest next step is human labels.
+- **Watch for repeats across calls, not just within one.** Each set of 5 lies was varied, but
+  across rounds Opus kept returning to the same towns and props.
