@@ -459,3 +459,30 @@ DELETE.
 
 **Verify secrets by their shape, not by reading them.** "Starts with `postgresql://fibble_reader:`,
 no `<`, one `@`" catches most mistakes and reveals nothing.
+
+---
+
+## Session 11 (2026-11-25): From rounds to bank days
+
+**Model:** Claude Opus 5.5 in Claude Code.
+**Branch:** `feat/content-days`.
+
+Andy chose to finish content while Vercel support sorts out his account email, and confirmed
+the fixed category order. Claude built:
+
+- the Unusual-articles harvest, whose topic subpages map onto the five categories
+- a looser surprise gate
+- the review page, and `review apply` with a review log
+- `build-days`
+
+A free end-to-end check then ran on real output: a review page from two earlier batches,
+checked in headless Chrome; simulated decisions, applied twice to show the double-apply
+guard; and a day-build dry run. The dry run correctly produced 0 days, because only History
+and Arts rounds exist. That's exactly what the Unusual-articles batch is for.
+
+### Two catches
+
+- **A sample harvest brought in "Penis Park".** The hard filter now covers sexual content,
+  with lookalike tests ("Sussex", "Penistone").
+- **A test built only 1 day of 3.** The placeholder sample days cite one article everywhere,
+  and the builder refused to reuse it: the rule working, not a bug.

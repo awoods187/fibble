@@ -2,7 +2,7 @@
   "name": "@fibble/pipeline",
   "version": "0.0.0",
   "private": true,
-  "description": "Offline content pipeline: harvest, reword, generate lies, verify, assemble, dedupe, review. Stages 1 to 5 are built; 6 and 7 are typed stubs.",
+  "description": "Offline content pipeline: harvest, reword, generate lies, verify, assemble, review, build days, publish.",
   "license": "AGPL-3.0-only",
   "type": "module",
   "exports": {
@@ -20,7 +20,9 @@
     "rating": "tsx scripts/rating.ts",
     "rank-truths": "tsx scripts/rank-truths.ts",
     "assemble": "tsx scripts/assemble.ts",
-    "publish-days": "tsx scripts/publish-days.ts"
+    "publish-days": "tsx scripts/publish-days.ts",
+    "review": "tsx scripts/review.ts",
+    "build-days": "tsx scripts/build-days.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "catalog:",

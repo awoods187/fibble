@@ -1,4 +1,4 @@
-import { SourceSchema } from '@fibble/shared';
+import { CATEGORY_NAMES, SourceSchema } from '@fibble/shared';
 import { z } from 'zod';
 import { MODELS, type ModelId } from './models';
 
@@ -34,11 +34,15 @@ export const HarvestMonthSchema = z
   .regex(/^\d{4}-(0[1-9]|1[0-2])$/, { message: 'Expected a month as YYYY-MM' });
 
 export const CandidateSchema = z.strictObject({
-  /** Stable across re-runs: source, month and a hash of the hook text. */
+  /** Stable across re-runs: the source, the month or topic, and a hash of the hook text. */
   id: z.string().min(1),
   harvestedFrom: HarvestSourceSchema,
-  /** The archive month the hook came from (YYYY-MM). */
-  month: HarvestMonthSchema,
+  /** DYK: the archive month the hook came from (YYYY-MM). */
+  month: HarvestMonthSchema.optional(),
+  /** Unusual articles: the topic subpage, e.g. "Sports". */
+  topic: z.string().optional(),
+  /** The category the source suggests (Unusual articles topics map to one). Stage 2 may override. */
+  categoryHint: z.enum(CATEGORY_NAMES).optional(),
   /** The raw hook or claim, as plain text from Wikipedia. Never shipped as-is. */
   rawClaim: z.string().min(1),
   /** The hook's bolded subject article, at the revision we read. */

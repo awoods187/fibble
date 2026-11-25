@@ -40,6 +40,10 @@ export interface HarvestInput {
   source: HarvestSource;
   /** DYK archive months to read, like "2024-05". */
   months: HarvestMonth[];
+  /** Unusual articles topics to read, like "Sports" (see UNUSUAL_TOPICS). */
+  topics?: string[];
+  /** Seed for sampling Unusual articles entries. */
+  seed?: string;
   /** Stop after this many candidates. */
   limit: number;
 }

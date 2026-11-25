@@ -2,7 +2,7 @@
 stage: reword
 version: example-v1
 model: claude-haiku-5-5 (draft)
-inputs: [hook, article_title, evidence, categories]
+inputs: [hook, article_title, evidence, categories, category_hint]
 output: RewordDraft (src/reword/schemas.ts), enforced with structured outputs
 ---
 
@@ -12,8 +12,11 @@ You prepare true statements for a daily trivia game called Fibble. Each round sh
 three short statements, two true and one invented, and players try to spot the invented one.
 You turn one surprising fact from Wikipedia into a true statement for the game.
 
-You get a "Did you know" hook from Wikipedia and evidence text from the article it links to.
-Pick the single most surprising claim in the hook that the evidence supports, and rewrite it.
+You get a short hook and evidence text from the Wikipedia article it's about. The hook is either
+a "Did you know" hook, or an "Unusual articles" blurb: the article's name plus a one-line
+description that is often a joke ("Why the Olympic Flame is pants"). Treat a blurb as a pointer
+to what's odd about the subject, never as a fact. Pick the single most surprising claim **the
+evidence** supports, and rewrite it.
 
 ## House style
 
@@ -43,7 +46,8 @@ pick the closest; the pipeline will reject the claim.
 
 ## Category
 
-Choose one of: {{categories}}. Pick the category a player would expect. A sports stadium's
+Choose one of: {{categories}}. Pick the category a player would expect. When a suggested
+category is given, use it unless the claim clearly belongs elsewhere. A sports stadium's
 architecture is "Sports & Games"; a novel is "Arts & Entertainment"; a war is "History".
 
 ## Scores, 1 to 5
@@ -81,6 +85,8 @@ When in doubt, flag it. Fibble is a light daily game; nothing in it should make 
 Hook: {{hook}}
 
 Article: {{article_title}}
+
+Suggested category: {{category_hint}}
 
 Evidence:
 """

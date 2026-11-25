@@ -34,6 +34,8 @@ export const CandidateRoundSchema = z.strictObject({
   truthIds: z.tuple([z.string(), z.string()]),
   lieId: z.string(),
   spotterDetectionRate: z.number().min(0).max(1),
+  /** The chosen lie's blind plausibility (stage 4), when known. */
+  plausibility: z.int().min(1).max(5).optional(),
   heuristicFlags: z.array(z.enum(HEURISTIC_FLAGS)),
   /** 1 - spotter detection rate, until real player data replaces it. */
   predictedFoolRate: z.number().min(0).max(1),

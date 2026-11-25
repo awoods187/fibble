@@ -229,4 +229,19 @@ describe('rewordCandidates', () => {
     expect(requests).toHaveLength(1);
     expect(rejected[0]).toMatchObject({ stage: 'checks', reasons: ['sensitive-topic'] });
   });
+
+  it('passes the source category hint to the draft prompt', async () => {
+    const hinted = parsePrompt(
+      'reword',
+      'test-v1',
+      '# System\n{{categories}}\n# User\n{{hook}}|{{category_hint}}',
+    );
+    const fake = fakeLlm([draftReply(), entailReply(true)]);
+    await rewordCandidates([candidate('c1', { categoryHint: 'Sports & Games' })], CTX, {
+      llm: fake.llm,
+      prompts: { ...PROMPTS, reword: hinted },
+      budget: new Budget(10),
+    });
+    expect(fake.requests[0]?.user).toMatch(/\|Sports & Games$/);
+  });
 });

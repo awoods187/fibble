@@ -125,6 +125,7 @@ export async function rewordCandidates(
         hook: c.rawClaim,
         article_title: c.article.title,
         evidence: c.contextText,
+        category_hint: c.categoryHint ?? 'none',
       }),
       schema: RewordDraftSchema,
       maxTokens: DRAFT_MAX_TOKENS,

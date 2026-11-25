@@ -96,6 +96,8 @@ pnpm dev                # http://localhost:3000 shows a sample round
 | `pnpm generate-lies`    | Stage 3: write lies; `--verify` runs stage 4 (**paid**)                  |
 | `pnpm verify`           | Stage 4: check lies are false; golden-set eval (**paid**)                |
 | `pnpm assemble`         | Stage 5: build rounds with the style-spotter test (**paid**)             |
+| `pnpm review`           | Stage 7: offline review page, then apply the decisions                   |
+| `pnpm build-days`       | Turn approved rounds into bank days                                      |
 | `pnpm rating`           | Offline human rating page, and a human-vs-model report                   |
 | `pnpm publish-days`     | Publish today through today + 3 to Postgres ([hosting](docs/hosting.md)) |
 | `pnpm db:check`         | Check a database role's connection and privileges                        |

@@ -54,7 +54,8 @@ export function puzzleTexts(p: Puzzle): string[] {
   ]);
 }
 
-function checkDay(
+/** The checks every published day must pass: schema, date, no samples, no banned topics. */
+export function checkDay(
   date: string,
   raw: unknown,
   allowSample: boolean,

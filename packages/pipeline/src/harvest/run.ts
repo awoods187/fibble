@@ -31,7 +31,7 @@ export function candidateId(month: string, hookText: string): string {
 }
 
 /** Which of each hook's linked articles are living people, keyed by hook text. */
-async function livingPeopleByHook(
+export async function livingPeopleByHook(
   client: WikiClient,
   hooks: ParsedHook[],
   now: Date,
