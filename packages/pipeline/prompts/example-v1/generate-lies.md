@@ -3,7 +3,7 @@ stage: generate-lies
 version: example-v1
 model: claude-opus-5-5
 inputs: [category, truth_1, truth_2, count]
-output: JSON array of { "text": string, "lieNote": string, "borrowedTexture": string }
+output: GeneratedLies (src/generate/schemas.ts), enforced with structured outputs
 ---
 
 # System
@@ -52,20 +52,15 @@ specific one never existed."
 
 ## Output
 
-Return only a JSON array of exactly {{count}} objects, with no prose before or after:
+Return exactly {{count}} lies in `lies`. For each one:
 
-```json
-[
-  {
-    "text": "The lie, 80 to 160 characters.",
-    "lieNote": "One sentence: why it sounded true, and that it is invented.",
-    "borrowedTexture": "What real-world detail you borrowed, for the reviewer (not shown to players)."
-  }
-]
-```
+- `text`: the lie, 80 to 160 characters.
+- `lieNote`: one sentence on why it sounded true, saying plainly that it's invented.
+- `borrowedTexture`: what real-world detail you borrowed, for the human reviewer. Players never
+  see it.
 
 Make the {{count}} candidates genuinely different from one another: different sub-topics,
-different kinds of surprise. Do not write variations of one idea.
+different kinds of surprise. Don't write variations of one idea.
 
 # User
 
