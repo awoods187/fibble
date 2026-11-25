@@ -189,6 +189,9 @@ catalogs:
     '@eslint/js':
       specifier: 10.0.1
       version: 10.0.1
+    '@neondatabase/serverless':
+      specifier: 1.2.1
+      version: 1.2.1
     '@tailwindcss/postcss':
       specifier: 4.3.5
       version: 4.3.5
@@ -275,6 +278,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@fibble/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@fibble/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -316,11 +322,39 @@ importers:
         specifier: 'catalog:'
         version: 5.1.1(@opentelemetry/api@1.10.0)(@types/node@26.6.7)(vite@8.3.8(@types/node@26.6.7)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
 
+  packages/db:
+    dependencies:
+      '@fibble/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@neondatabase/serverless':
+        specifier: 'catalog:'
+        version: 1.2.1
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
+    devDependencies:
+      eslint:
+        specifier: 'catalog:'
+        version: 10.15.0(jiti@2.7.0)
+      tsx:
+        specifier: 'catalog:'
+        version: 4.23.15
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.1.1(@opentelemetry/api@1.10.0)(@types/node@26.6.7)(vite@8.3.8(@types/node@26.6.7)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+
   packages/pipeline:
     dependencies:
       '@anthropic-ai/sdk':
         specifier: 'catalog:'
         version: 1.14.0(zod@4.6.7)
+      '@fibble/db':
+        specifier: workspace:*
+        version: link:../db
       '@fibble/shared':
         specifier: workspace:*
         version: link:../shared
@@ -893,6 +927,10 @@ packages:
     peerDependencies:
       '@emnapi/core': ^1.7.1 || 2.0.0-beta.2
       '@emnapi/runtime': ^1.7.1 || 2.0.0-beta.2
+
+  '@neondatabase/serverless@1.2.1':
+    resolution: {integrity: sha512-PI2JjuyEFE7oZDTkV/s6WP4KEceCwnjQHClfunhysuIATtvcVTBLdA4UgHTnJo7C0mkK+OZ6U7SV1NDnYa0HgA==}
+    engines: {node: '>=19.0.0'}
 
   '@next/env@16.4.6':
     resolution: {integrity: sha512-SunBjJ6t+oBtecS3dTjdVuMhUogP5wD/vrGL5EVuQYM1iS4O5ilL51HkiJ3sPjMzRHiCChvr4dbaSJbR7F3lxA==}
@@ -3232,6 +3270,8 @@ snapshots:
       '@emnapi/runtime': 2.0.0-beta.2
       '@tybys/wasm-util': 0.10.5
     optional: true
+
+  '@neondatabase/serverless@1.2.1': {}
 
   '@next/env@16.4.6': {}
 

@@ -26,6 +26,7 @@ export * from './content/sensitive';
 export * from './assemble/schemas';
 export * from './assemble/heuristics';
 export * from './assemble/run';
+export * from './publish/plan';
 export { harvest } from './stages/harvest';
 export { reword } from './stages/reword';
 export { generateLies } from './stages/generate-lies';

@@ -24,7 +24,9 @@
     "generate-lies": "pnpm --filter @fibble/pipeline generate-lies",
     "rating": "pnpm --filter @fibble/pipeline rating",
     "rank-truths": "pnpm --filter @fibble/pipeline rank-truths",
-    "assemble": "pnpm --filter @fibble/pipeline assemble"
+    "assemble": "pnpm --filter @fibble/pipeline assemble",
+    "db:check": "pnpm --filter @fibble/db check",
+    "publish-days": "pnpm --filter @fibble/pipeline publish-days"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",

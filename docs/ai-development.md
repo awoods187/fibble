@@ -424,3 +424,38 @@ Every scripted doc edit now asserts that its match was found.
 
 **Before a metric selects anything, check it against human judgement.** This took one cheap
 run against ratings that already existed.
+
+---
+
+## Session 10 (2026-11-25): Hosting on Vercel and Neon
+
+**Model:** Claude Opus 5.5 in Claude Code.
+**Branch:** `feat/hosting`.
+
+Andy asked why a hosted database was needed at all. Claude laid out three options: the
+laptop only, the laptop plus a tunnel, or Vercel plus Neon. Andy chose Vercel plus Neon.
+
+Claude walked him through the setup screen by screen:
+
+- two least-privilege roles, created in SQL
+- passwords generated in 1Password, without symbols so they're safe in a URL
+- the 1Password CLI, so secrets go from 1Password to GitHub without being pasted
+
+Claude never saw a credential. Each check printed shape tests (prefix, role name, no
+placeholders) or `op run`-masked output, never values.
+
+The code is `packages/db`, a Postgres content source and `pnpm publish-days`. `pnpm db:check`
+confirmed against the real database that the reader can only SELECT and the publisher can't
+DELETE.
+
+### What went wrong
+
+- **Node grabbed a flag.** Our scripts' `--env-file` flag is also a Node option, and Node
+  took it first. `db:check` doesn't use it.
+- **The Claude Code deny rules worked as intended.** They stopped Claude reading or writing
+  `.env.local`, so Andy rewrote that file himself.
+
+### Lesson
+
+**Verify secrets by their shape, not by reading them.** "Starts with `postgresql://fibble_reader:`,
+no `<`, one `@`" catches most mistakes and reveals nothing.

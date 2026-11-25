@@ -1,0 +1,28 @@
+{
+  "name": "@fibble/db",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Published puzzle days in Neon Postgres: the store, migrations and connection checks.",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check": "tsx scripts/db-check.ts"
+  },
+  "dependencies": {
+    "@fibble/shared": "workspace:*",
+    "@neondatabase/serverless": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "eslint": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
