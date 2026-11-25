@@ -36,3 +36,33 @@ export const DEDUPE = {
   articleReuseDays: 365,
   entityReuseDays: 90,
 } as const;
+
+/**
+ * List prices in US dollars per million tokens (Claude API, 2026-11). Used only to
+ * estimate and cap pipeline spend; the Console's usage page is the source of truth.
+ * Cache writes cost 1.25x input; cache reads are listed per model.
+ */
+export const PRICES: Record<ModelId, { input: number; output: number; cacheRead: number }> = {
+  'claude-opus-5-5': { input: 4, output: 20, cacheRead: 0.2 },
+  'claude-sonnet-5-5': { input: 2, output: 10, cacheRead: 0.1 },
+  'claude-haiku-5-5': { input: 0.1, output: 0.5, cacheRead: 0.01 },
+};
+
+export interface TokenUsage {
+  inputTokens: number;
+  outputTokens: number;
+  cacheCreationTokens: number;
+  cacheReadTokens: number;
+}
+
+/** Estimated cost of one call. Output tokens include thinking. */
+export function estimateCostUsd(model: ModelId, usage: TokenUsage): number {
+  const p = PRICES[model];
+  return (
+    (usage.inputTokens * p.input +
+      usage.cacheCreationTokens * p.input * 1.25 +
+      usage.cacheReadTokens * p.cacheRead +
+      usage.outputTokens * p.output) /
+    1_000_000
+  );
+}
