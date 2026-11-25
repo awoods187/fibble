@@ -4,3 +4,4 @@ export * from './public';
 export * from './schema';
 export * from './share';
 export * from './game';
+export * from './swipe';
