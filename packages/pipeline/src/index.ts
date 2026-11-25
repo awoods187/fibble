@@ -19,6 +19,8 @@ export * from './evals/verify-eval';
 export * from './generate/schemas';
 export * from './generate/checks';
 export * from './generate/run';
+export * from './rating/page';
+export * from './rating/report';
 export { harvest } from './stages/harvest';
 export { reword } from './stages/reword';
 export { generateLies } from './stages/generate-lies';
