@@ -28,6 +28,8 @@ pnpm reword --in out/candidates.jsonl --out out/truths.jsonl --budget 1   # stag
 pnpm verify --golden <golden.json> --out out/eval.jsonl --budget 3      # stage 4 eval, PAID (Claude + Tavily)
 pnpm generate-lies --truths out/truths.jsonl --out out/lies.jsonl --verify --budget 3   # stages 3+4, PAID
 pnpm assemble --truths … --lies … --verified … --out out/rounds.jsonl   # stage 5, PAID (Haiku spotter)
+pnpm review page|apply --rounds … --lies …   # stage 7: human review (free, offline page)
+pnpm build-days --approved out/approved.jsonl --bank bank --dry-run   # approved rounds → bank days
 pnpm rating page --truths … --lies … --out out/rate.html   # local human-rating page (free, offline)
 pnpm rating report --key out/rate.key.json --ratings <download> --verified …   # human vs model
 pnpm build
