@@ -87,3 +87,50 @@ pushing.
   search the raw JSON for source URLs, instead of checking a few known fields.
 - **Verify from a fresh clone, not the working tree.** A passing local build proves nothing
   about files git is silently ignoring.
+
+---
+
+## Session 2 (2026-11-25): Credentials, search choice and pipeline stage 1 (harvest)
+
+**Model:** Claude Opus 5.5 in Claude Code.
+**Branch:** `feat/pipeline-harvest`.
+
+### What happened
+
+1. **Credentials without keys.** The plan was to create Anthropic API keys and store them as
+   secrets. The Console offered keyless options instead, so Claude switched the plan: `ant auth
+login` locally, workload identity federation for CI. Claude verified the login with
+   `ant auth status` and a free `models list` call rather than taking it on trust.
+2. **Search API.** Claude laid out three options (Claude's built-in web search, Brave, Tavily)
+   with a recommendation; Andy chose Tavily. Claude checked the key with one test search
+   without printing it. Recorded in ADR 0005.
+3. **Harvest.** Claude fetched one real DYK archive month before planning and found the PRD's
+   page name (`Wikipedia:Recent additions`) is now a redirect to `Wikipedia:Did you know
+archive/YYYY/Month`. Plan approved as proposed, then built: parser, context picker,
+   living-person check, a polite cached API client, and a CLI.
+
+### Checking the output, not just the tests
+
+A real run over May 2024 gave 275 candidates from 276 hooks (one had no bold subject), with
+72 flagged for living people. Spot checks:
+
+- Richard Osman was flagged on a hook whose subject was a different article, which is the
+  reason the check covers every linked person, not just the subject.
+- Samuel Kummer, a modern organist, was **not** flagged. That looked like a bug; Wikidata
+  records his death in April 2024, so the check was right.
+- A re-run made 0 requests (318 cache hits).
+
+### Delegated vs. hand-written
+
+| Area                            | Who                                |
+| ------------------------------- | ---------------------------------- |
+| Search vendor, auth approach    | Andy, from options Claude laid out |
+| Console and GitHub secret setup | Andy (Claude never saw a key)      |
+| Harvest code, tests, docs, ADR  | Claude, reviewed by Andy in the PR |
+
+### Lessons
+
+- **Look at the real data before planning a parser.** One request found the renamed archive
+  pages and the exact hook format; the fixtures were then written to match it.
+- **Investigate a surprising "pass" as hard as a failure.** The unflagged organist was correct,
+  but it was worth the two requests to know.
