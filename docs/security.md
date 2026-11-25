@@ -4,12 +4,13 @@ What Fibble protects, how, and what's still open. Last reviewed 2026-11-25.
 
 ## What we protect
 
-| Asset                         | Where it lives                                      | Risk if exposed                     |
-| ----------------------------- | --------------------------------------------------- | ----------------------------------- |
-| Claude API access             | No key exists: `ant auth login` and federation      | Spend on our account                |
-| Tavily key (`SEARCH_API_KEY`) | `fibble-content` Actions secret, local `.env.local` | Spend on our account                |
-| Database URL (later)          | Vercel env vars, `fibble-content` Actions secret    | Read/write to all puzzles and stats |
-| Future puzzles and answers    | Private `fibble-content` repo, then the database    | The game is spoiled                 |
+| Asset                                          | Where it lives                                      | Risk if exposed                      |
+| ---------------------------------------------- | --------------------------------------------------- | ------------------------------------ |
+| Claude API access                              | No key exists: `ant auth login` and federation      | Spend on our account                 |
+| Tavily key (`SEARCH_API_KEY`)                  | `fibble-content` Actions secret, local `.env.local` | Spend on our account                 |
+| Database: reader (`DATABASE_URL`)              | Vercel env var (Production), 1Password              | Read published days: at most 4 ahead |
+| Database: publisher (`DATABASE_URL_PUBLISHER`) | `fibble-content` Actions secret, 1Password          | Insert and update days; never delete |
+| Future puzzles and answers                     | Private `fibble-content` repo, then the database    | The game is spoiled                  |
 
 ## Keeping keys out of the code
 
@@ -38,6 +39,11 @@ What Fibble protects, how, and what's still open. Last reviewed 2026-11-25.
 
 - **Claude:** only our `ant` login and, once set up, a federation rule that accepts tokens
   from `awoods187/fibble-content` workflows on `main` only.
+- **Database (ADR 0012):** two least-privilege roles. The app's `fibble_reader` can only
+  `SELECT`; the publish job's `fibble_publisher` can insert and update but never delete.
+  The owner's connection string is stored nowhere. `pnpm db:check` verifies the privileges.
+- **Local secrets live in 1Password** and are used through `op run`, so `.env.local` holds
+  only `op://` references. Scripts refuse a reference that wasn't resolved.
 - **Tavily:** whoever holds the key, so it lives in exactly two places (above). Stay on the
   free plan or a hard usage cap, so a leaked key can't run up a bill.
 - **GitHub:** `awoods187` is the only collaborator, with no deploy keys or webhooks.

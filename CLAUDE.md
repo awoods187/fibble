@@ -33,6 +33,8 @@ pnpm rating report --key out/rate.key.json --ratings <download> --verified …  
 pnpm build
 pnpm format              # Prettier write; CI runs format:check
 pnpm check:secrets       # secret scan of committable files (CI also scans the built bundle)
+pnpm db:check --role reader|publisher   # connection + privilege check (via op run)
+pnpm publish-days --bank <dir> --dry-run   # publish today..today+3 to Postgres (docs/hosting.md)
 ```
 
 Scope to one package with `pnpm --filter @fibble/web test` (or `@fibble/shared`, `@fibble/pipeline`).
@@ -43,6 +45,7 @@ Scope to one package with `pnpm --filter @fibble/web test` (or `@fibble/shared`,
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `apps/web/`          | Next.js App Router game. `src/app/api/` route handlers, `src/lib/content/` ContentSource, `src/lib/puzzle-service.ts` date gate and answer logic |
 | `packages/shared/`   | Zod schemas (`schema.ts`), categories, date gating, `toPublicPuzzle`, `buildAnswerResult`, `buildShareText`                                      |
+| `packages/db/`       | `PuzzleStore` over Neon Postgres, the migration SQL, `db:check` (ADR 0012, docs/hosting.md)                                                      |
 | `packages/pipeline/` | Typed stages (`src/stages/`), harvest (`src/harvest/`), record schemas (`src/schemas.ts`), `models.ts`, `prompts/example-v1/`, `evals/`          |
 | `tools/review/`      | Placeholder for the local review UI                                                                                                              |
 | `tools/security/`    | `check:secrets` scanner and repo guard tests (see `docs/security.md`)                                                                            |
