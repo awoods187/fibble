@@ -224,3 +224,39 @@ describe('chunk', () => {
     expect(chunk([], 2)).toEqual([]);
   });
 });
+
+describe('WikiClient.searchArticles', () => {
+  it('returns introductions best match first, skipping pages without text', async () => {
+    const { fetch, calls } = fakeFetch([
+      {
+        body: {
+          query: {
+            pages: [
+              { title: 'B', index: 2, fullurl: 'https://en.wikipedia.org/wiki/B', extract: 'b' },
+              { title: 'A', index: 1, fullurl: 'https://en.wikipedia.org/wiki/A', extract: 'a' },
+              { title: 'C', index: 3, fullurl: 'https://en.wikipedia.org/wiki/C' },
+            ],
+          },
+        },
+      },
+    ]);
+    const { c } = client(fetch);
+    expect(await c.searchArticles('emu war', 3)).toEqual([
+      { title: 'A', url: 'https://en.wikipedia.org/wiki/A', extract: 'a' },
+      { title: 'B', url: 'https://en.wikipedia.org/wiki/B', extract: 'b' },
+    ]);
+    expect(Object.fromEntries(calls[0]?.url.searchParams ?? [])).toMatchObject({
+      generator: 'search',
+      gsrsearch: 'emu war',
+      gsrlimit: '3',
+      gsrnamespace: '0',
+      exintro: '1',
+    });
+  });
+
+  it('returns an empty list when nothing matches', async () => {
+    const { fetch } = fakeFetch([{ body: { batchcomplete: true } }]);
+    const { c } = client(fetch);
+    expect(await c.searchArticles('zzzz')).toEqual([]);
+  });
+});

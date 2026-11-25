@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { bestSection, buildContext, CONTEXT_LIMITS, contentWords, splitSections } from './context';
+import {
+  bestSection,
+  buildContext,
+  CONTEXT_LIMITS,
+  contentWords,
+  evidencePassage,
+  splitSections,
+} from './context';
 
 const EXTRACT = `The Glass Lighthouse of Vell is a lighthouse on an imaginary coast.
 It is made of glass.
@@ -67,5 +74,20 @@ describe('buildContext', () => {
     const context = buildContext(lead, 'nothing');
     expect(context.length).toBeLessThanOrEqual(CONTEXT_LIMITS.lead + 2);
     expect(context.endsWith('here. …')).toBe(true);
+  });
+});
+
+describe('evidencePassage', () => {
+  it('gives the start of the lead plus the best-matching section, clipped', () => {
+    const passage = evidencePassage(EXTRACT, 'the tower is twelve metres tall', {
+      lead: 30,
+      section: 200,
+    });
+    expect(passage.startsWith('The Glass Lighthouse of Vell i …')).toBe(true);
+    expect(passage.endsWith('== Architecture ==\nThe tower is twelve metres tall.')).toBe(true);
+  });
+
+  it('returns only the lead when no section matches', () => {
+    expect(evidencePassage('Just a lead.', 'zebra')).toBe('Just a lead.');
   });
 });

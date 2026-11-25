@@ -128,3 +128,21 @@ export function buildContext(extract: string, hook: string): string {
     parts.push(`== ${section.heading} ==\n${clip(section.text, CONTEXT_LIMITS.section)}`);
   return parts.join('\n\n');
 }
+
+/**
+ * A short evidence passage for verification: the start of the lead plus the
+ * section that best matches `text`. Facts in a DYK-style claim often live deep
+ * in an article, where an introduction-only snippet would miss them.
+ */
+export function evidencePassage(
+  extract: string,
+  text: string,
+  max = { lead: 600, section: 1800 },
+): string {
+  const { lead, sections } = splitSections(extract);
+  const parts: string[] = [];
+  if (lead) parts.push(clip(lead, max.lead));
+  const section = bestSection(sections, text);
+  if (section) parts.push(`== ${section.heading} ==\n${clip(section.text, max.section)}`);
+  return parts.join('\n\n');
+}
