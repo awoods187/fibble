@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { Budget, CallUsage, LlmClient } from '../llm';
 import { MODELS } from '../models';
 import { type Prompt, render } from '../prompts';
-import { seededShuffle } from '../rating/page';
+import { seededShuffle } from '../shuffle';
 import type { RewordedTruth, StageContext } from '../types';
 
 /**

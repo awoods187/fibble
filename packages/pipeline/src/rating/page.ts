@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
+import { seededShuffle } from '../shuffle';
 import { describeSensitive, findSensitive } from '../content/sensitive';
 import type { LieCandidate } from '../generate/schemas';
 import type { RewordedTruth } from '../types';
@@ -34,17 +35,7 @@ export interface RatingSet {
 
 const hash = (s: string) => createHash('sha256').update(s).digest('hex');
 
-/** Deterministic shuffle (Fisher–Yates driven by a seeded hash), so a page can be rebuilt. */
-export function seededShuffle<T>(items: T[], seed: string): T[] {
-  const out = [...items];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = parseInt(hash(`${seed}:${i}`).slice(0, 8), 16) % (i + 1);
-    const a = out[i] as T;
-    out[i] = out[j] as T;
-    out[j] = a;
-  }
-  return out;
-}
+export { seededShuffle } from '../shuffle';
 
 /** Drop anything that trips the hard content filter: it never reaches a human rater. */
 export function filterForRating(

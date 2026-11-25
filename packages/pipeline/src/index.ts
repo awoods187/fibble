@@ -7,6 +7,8 @@ export * from './harvest/context';
 export * from './harvest/living';
 export * from './harvest/wiki-client';
 export * from './harvest/run';
+export * from './harvest/unusual';
+export * from './shuffle';
 export * from './llm';
 export * from './prompts';
 export * from './reword/checks';

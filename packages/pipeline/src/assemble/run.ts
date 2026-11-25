@@ -3,7 +3,7 @@ import type { GenerationRecord, LieCandidate } from '../generate/schemas';
 import type { Budget, CallUsage, LlmClient } from '../llm';
 import { MODELS, STYLE_SPOTTER } from '../models';
 import { type Prompt, render } from '../prompts';
-import { seededShuffle } from '../rating/page';
+import { seededShuffle } from '../shuffle';
 import type { RewordedTruth, StageContext, Trace } from '../types';
 import type { VerifiedLie } from '../verify/schemas';
 import { heuristicFlags } from './heuristics';
