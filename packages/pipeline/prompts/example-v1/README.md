@@ -12,7 +12,7 @@ read and are not the production prompts. Production prompts live in the private
 | `entailment.md`     | 2. Entailment check                   | `claude-opus-5-5`           | Full example                       |
 | `verify-queries.md` | 4. Search queries for a lie           | `claude-haiku-5-5`          | Full example                       |
 | `verify-judge.md`   | 4. Verify the lie is false            | `claude-sonnet-5-5`         | Full example                       |
-| `style-spotter.md`  | 5. Style-spotter test                 | `claude-haiku-5-5`          | Stub                               |
+| `style-spotter.md`  | 5. Style-spotter test                 | `claude-haiku-5-5`          | Full example                       |
 | `classify.md`       | 1–2. Category and entity tagging      | `claude-haiku-5-5`          | Folded into `reword.md` (ADR 0006) |
 
 Template variables use `{{double_braces}}`. Shared rules (the style spec) sit at the top of

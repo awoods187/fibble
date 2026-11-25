@@ -72,4 +72,10 @@ describe('example-v1 prompts', () => {
     const vars = { max_great: '3', statements: '1. x' };
     expect(`${render(p.system, vars)}${render(p.user, vars)}`).not.toMatch(/\{\{/);
   });
+
+  it('style-spotter renders with every variable it uses', async () => {
+    const p = await loadPrompt(EXAMPLE_PROMPTS_DIR, 'style-spotter');
+    const vars = { category: 'History', statements: '1. a' };
+    expect(`${p.system}${render(p.user, vars)}`).not.toMatch(/\{\{/);
+  });
 });
