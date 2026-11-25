@@ -5,6 +5,7 @@ import {
   buildRatingPage,
   buildRatingSet,
   embedJson,
+  filterForRating,
   RatingsFileSchema,
   seededShuffle,
 } from './page';
@@ -187,7 +188,29 @@ describe('ranker vs human', () => {
       ['dyk-2', 'great'],
     ]);
     expect(ratingReport(set.key, ratings, new Map(), tiers).rankerVsHuman).toEqual({
-      great: { great: 1, fine: 0, boring: 1 },
+      great: { great: 1, fine: 0, boring: 1, 'not-ok': 0 },
     });
+  });
+});
+
+describe('filterForRating', () => {
+  it('keeps banned topics away from the human rater, in truths, reveals, lies and lie notes', () => {
+    const t1 = truth('ok', 'A lighthouse ran on candles until 1931.');
+    const t2 = {
+      ...truth('bad', 'A school parade went badly wrong in 2016.'),
+      expansion: 'Students wore Nazi uniforms.',
+    };
+    const l1 = lie('lie-ok', 'A ferry paid rowers in brass tokens.');
+    const l2 = {
+      ...lie('lie-bad', 'A banquet was held in a castle.'),
+      lieNote: 'Plausible because of the massacre there.',
+    };
+    const out = filterForRating([t1, t2], [l1, l2]);
+    expect(out.truths.map((t) => t.candidateId)).toEqual(['ok']);
+    expect(out.lies.map((l) => l.id)).toEqual(['lie-ok']);
+    expect(out.skipped).toEqual([
+      'truth bad: Sensitive topic: extremism ("nazi")',
+      'lie lie-bad: Sensitive topic: atrocity ("massacre")',
+    ]);
   });
 });

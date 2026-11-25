@@ -20,6 +20,7 @@ import { GenerationRecordSchema } from '../src/generate/schemas';
 import {
   buildRatingPage,
   buildRatingSet,
+  filterForRating,
   RatingsFileSchema,
   type RatingKeyEntry,
 } from '../src/rating/page';
@@ -55,9 +56,14 @@ const jsonl = async <T>(file: string, schema: z.ZodType<T>) =>
     .map((l) => schema.parse(JSON.parse(l)));
 
 if (mode === 'page') {
-  const truths = await jsonl(path(values.truths, 'truths'), RewordedTruthSchema);
+  const allTruths = await jsonl(path(values.truths, 'truths'), RewordedTruthSchema);
   const records = await jsonl(path(values.lies, 'lies'), GenerationRecordSchema);
-  const lies = records.flatMap((r) => r.accepted);
+  // Nothing that trips the hard content filter reaches a human rater either.
+  const { truths, lies, skipped } = filterForRating(
+    allTruths,
+    records.flatMap((r) => r.accepted),
+  );
+  for (const line of skipped) console.log(`  skipped ${line}`);
   const outFile = path(values.out, 'out');
   const set = buildRatingSet(truths, lies, values.seed ?? new Date().toISOString().slice(0, 10));
   const keyFile = outFile.replace(/\.html$/, '') + '.key.json';
@@ -111,17 +117,21 @@ if (mode === 'page') {
   );
   const f = (x: typeof r.fun.truths) =>
     x.rated
-      ? `boring ${x.boring} · fine ${x.fine} · great ${x.great} (${pct(x.greatRate)} great, ${pct(x.boringRate)} boring)`
+      ? `boring ${x.boring} · fine ${x.fine} · great ${x.great} · not OK ${x.notOk} (${pct(x.greatRate)} great, ${pct(x.boringRate)} boring)`
       : 'not rated';
   console.log(`\n  Good for the game? truths: ${f(r.fun.truths)}`);
   console.log(`                     lies:   ${f(r.fun.lies)}`);
+  if (r.notOk.length) {
+    console.log('\n  NOT OK (content filter misses; add terms or flags so these are caught):');
+    for (const x of r.notOk) console.log(`    ${x.expected} ${x.sourceId}`);
+  }
   if (Object.keys(r.rankerVsHuman).length) {
     console.log('\n  Ranker tier vs your rating (truths):');
     for (const tier of ['great', 'fine', 'boring'] as const) {
       const row = r.rankerVsHuman[tier];
       if (row)
         console.log(
-          `    ranker ${tier.padEnd(6)} → you: great ${row.great} · fine ${row.fine} · boring ${row.boring}`,
+          `    ranker ${tier.padEnd(6)} → you: great ${row.great} · fine ${row.fine} · boring ${row.boring} · not OK ${row['not-ok']}`,
         );
     }
   }
