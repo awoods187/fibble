@@ -36,7 +36,12 @@ describe('example-v1 prompts', () => {
     const p = await loadPrompt(EXAMPLE_PROMPTS_DIR, 'reword');
     expect(p.version).toBe('example-v1');
     const system = render(p.system, { categories: CATEGORY_LIST });
-    const user = render(p.user, { hook: 'h', article_title: 't', evidence: 'e' });
+    const user = render(p.user, {
+      hook: 'h',
+      article_title: 't',
+      evidence: 'e',
+      category_hint: 'none',
+    });
     expect(`${system}${user}`).not.toMatch(/\{\{/);
     expect(system).toContain('"Science & Nature"');
   });

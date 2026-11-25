@@ -42,9 +42,10 @@ describe('checkDraft', () => {
     expect(reasons({ expansion: '  ' })).toContain('expansion');
   });
 
-  it('requires both scores to be 4 or more', () => {
-    expect(reasons({ surprise: 3 })).toContain('low-score');
-    expect(reasons({ verifiability: 2 })).toContain('low-score');
+  it('requires surprise 3+ and verifiability 4+', () => {
+    expect(reasons({ surprise: 3 })).not.toContain('low-score');
+    expect(reasons({ surprise: 2 })).toContain('low-score');
+    expect(reasons({ verifiability: 3 })).toContain('low-score');
   });
 
   it('rejects any content flag', () => {

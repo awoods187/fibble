@@ -15,7 +15,13 @@ export interface CheckFailure {
 export const HEDGING_PATTERN =
   /\b(reportedly|allegedly|supposedly|apparently|purportedly|rumou?red|it is (said|believed|thought)|some (say|believe)|may have|might have|is said to|was said to)\b/i;
 
-export const MIN_SCORE = 4;
+/**
+ * Stage 2 gates. Surprise was 4+ and gave every accepted truth a 4 while rejecting most drafts
+ * (a 9% yield); the fun ranker now does the choosing (ADR 0009), so surprise only needs 3+.
+ * Verifiability stays strict: a vague truth can't be checked.
+ */
+export const MIN_SURPRISE = 3;
+export const MIN_VERIFIABILITY = 4;
 /** The longest run of words a statement may share with its source text (PRD licensing). */
 export const MAX_SHARED_WORDS = 7;
 
@@ -81,10 +87,10 @@ export function checkDraft(draft: RewordDraft, evidence: string, hook: string): 
       detail: `Expansion must be one sentence of 1 to ${EXPANSION_MAX_LENGTH} characters`,
     });
   }
-  if (draft.surprise < MIN_SCORE || draft.verifiability < MIN_SCORE) {
+  if (draft.surprise < MIN_SURPRISE || draft.verifiability < MIN_VERIFIABILITY) {
     failures.push({
       reason: 'low-score',
-      detail: `Scores surprise ${draft.surprise}, verifiability ${draft.verifiability}; both must be ${MIN_SCORE}+`,
+      detail: `Scores surprise ${draft.surprise} (needs ${MIN_SURPRISE}+), verifiability ${draft.verifiability} (needs ${MIN_VERIFIABILITY}+)`,
     });
   }
   if (draft.contentFlags.length) {
