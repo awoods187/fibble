@@ -325,3 +325,18 @@ runs. A unit test can't show that.
 The file-writing tool turned the ` ` escapes in a regular expression into literal
 line-separator characters, which broke the parse. Typecheck caught it, and a short script
 restored the escapes.
+
+### Follow-up: the first ratings, and page v2
+
+Andy rated all 42 statements and said the scale was confusing: he picked "surprising but
+believable" when a statement would fit the game, and found many facts boring either way. So
+v1 measured "fits the game" more than believability. Even so, two findings were clear:
+
+- **The model's plausibility rater is far too harsh.** Andy put all 30 lies at 3 or more; the
+  model passed 11. It was 1.7 points lower on average, and never passed a lie Andy didn't.
+- **"Is it fun?" is the missing measure.** Stage 2 gave all 12 accepted truths a surprise
+  score of exactly 4, so the score doesn't separate anything.
+
+Page v2 asks two separate questions: **Believable?** (1–5, only "does it sound true") and
+**Good for the game?** (boring, fine, great). The report shows both. The lesson: one scale
+can't answer two questions, and a rater will answer the one they care about.
