@@ -1,5 +1,5 @@
 import { MIN_PLAUSIBILITY } from '../verify/schemas';
-import type { RatingKeyEntry, RatingsFile } from './page';
+import type { FunLevel, RatingKeyEntry, RatingsFile } from './page';
 
 /**
  * Compare human believability ratings with the model's (ADR 0008). Two questions:
@@ -7,7 +7,20 @@ import type { RatingKeyEntry, RatingsFile } from './page';
  *     and a rater that scores them much lower is miscalibrated.
  *  2. Where both rated a lie, how often do they agree on passing the 3+ floor?
  * Ratings marked "knew" are excluded from both: they aren't blind judgments.
+ * "Good for the game" (fun) is reported separately and counts every rating:
+ * knowing a fact doesn't change whether it's fun.
  */
+
+export interface FunStats {
+  rated: number;
+  boring: number;
+  fine: number;
+  great: number;
+  /** Share rated great. */
+  greatRate: number;
+  /** Share rated boring. */
+  boringRate: number;
+}
 
 export interface GroupStats {
   n: number;
@@ -30,6 +43,7 @@ export interface RatingReport {
   knewExcluded: number;
   truths: GroupStats;
   lies: GroupStats;
+  fun: { truths: FunStats; lies: FunStats };
   /** Lies rated by both a human and the model, blind ratings only. */
   compared: number;
   /** Mean of (model - human): negative means the model is harsher. */
@@ -53,6 +67,19 @@ function stats(scores: number[]): GroupStats {
   };
 }
 
+function funStats(levels: FunLevel[]): FunStats {
+  const count = (l: FunLevel) => levels.filter((x) => x === l).length;
+  const rated = levels.length;
+  return {
+    rated,
+    boring: count('boring'),
+    fine: count('fine'),
+    great: count('great'),
+    greatRate: rated ? count('great') / rated : 0,
+    boringRate: rated ? count('boring') / rated : 0,
+  };
+}
+
 export function ratingReport(
   key: Record<string, RatingKeyEntry>,
   ratings: RatingsFile,
@@ -63,9 +90,11 @@ export function ratingReport(
   const lieScores: number[] = [];
   const rows: LieComparison[] = [];
   let knewExcluded = 0;
+  const funBy: Record<'truth' | 'lie', FunLevel[]> = { truth: [], lie: [] };
   for (const r of ratings.ratings) {
     const entry = key[r.id];
     if (!entry) continue;
+    if (r.fun) funBy[entry.expected].push(r.fun);
     if (r.knew) {
       knewExcluded++;
       continue;
@@ -84,6 +113,7 @@ export function ratingReport(
     knewExcluded,
     truths: stats(truthScores),
     lies: stats(lieScores),
+    fun: { truths: funStats(funBy.truth), lies: funStats(funBy.lie) },
     compared: rows.length,
     meanModelMinusHuman: rows.length
       ? rows.reduce((n, r) => n + (r.model - r.human), 0) / rows.length

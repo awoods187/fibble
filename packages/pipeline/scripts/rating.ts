@@ -100,6 +100,12 @@ if (mode === 'page') {
   console.log(
     `  lies:   n=${r.lies.n}, mean ${r.lies.mean.toFixed(2)}, ${pct(r.lies.passRate)} at 3+, ${JSON.stringify(r.lies.dist)}`,
   );
+  const f = (x: typeof r.fun.truths) =>
+    x.rated
+      ? `boring ${x.boring} · fine ${x.fine} · great ${x.great} (${pct(x.greatRate)} great, ${pct(x.boringRate)} boring)`
+      : 'not rated';
+  console.log(`\n  Good for the game? truths: ${f(r.fun.truths)}`);
+  console.log(`                     lies:   ${f(r.fun.lies)}`);
   if (r.compared) {
     console.log(
       `\n  Model vs you on ${r.compared} lies: model is ${r.meanModelMinusHuman.toFixed(2)} points ${r.meanModelMinusHuman < 0 ? 'harsher' : 'kinder'} on average`,
