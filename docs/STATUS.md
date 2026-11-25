@@ -3,11 +3,12 @@
 The single place to see where Fibble is. **Update it in every PR that changes the picture.**
 Numbers only: real truths, lies and rounds stay in the private `fibble-content` repo.
 
-_Last updated: 2026-11-25 (content-to-bank PR)._
+_Last updated: 2026-11-25 (launch date and dedupe PR)._
 
 ## Where we are
 
-**Phase:** the pipeline runs from Wikipedia to bank days (stages 1–5, review, day assembly).
+**Phase:** private launch, **2026-11-25 = Fibble #1**. The pipeline runs from Wikipedia to bank
+days (stages 1–5, review, day assembly).
 Hosting is built but waiting on Vercel. Next: the first real days (a paid batch plus Andy's
 review), then the playable game.
 
@@ -21,19 +22,19 @@ review), then the playable game.
 
 ## Pipeline
 
-| Stage                  | Built | Command                                                  | ADR                                                      |
-| ---------------------- | ----- | -------------------------------------------------------- | -------------------------------------------------------- |
-| 1. Harvest             | ✅    | `pnpm harvest` (free): DYK, or Unusual articles by topic | [0013](adr/0013-content-to-bank.md)                      |
-| 2. Reword + entailment | ✅    | `pnpm reword`                                            | [0006](adr/0006-reword-stage-design.md)                  |
-| 2b. Fun ranking        | ✅    | `pnpm rank-truths`                                       | [0009](adr/0009-fun-selection-and-plausibility-floor.md) |
-| 3. Generate lies       | ✅    | `pnpm generate-lies`                                     | [0008](adr/0008-generate-lies-and-gate-2.md)             |
-| 4. Verify lies         | ✅    | `pnpm verify` (also the golden-set eval)                 | [0007](adr/0007-verify-stage-design.md)                  |
-| 5. Assemble rounds     | ✅    | `pnpm assemble`                                          | [0011](adr/0011-assemble-stage-design.md)                |
-| 6. Dedupe              | ❌    | —                                                        | —                                                        |
-| 7. Human review        | ✅    | `pnpm review page`, then `pnpm review apply`             | [0013](adr/0013-content-to-bank.md)                      |
-| Day assembly           | ✅    | `pnpm build-days`                                        | [0013](adr/0013-content-to-bank.md)                      |
-| Publish                | ✅    | `pnpm publish-days`                                      | [0012](adr/0012-hosting-vercel-neon.md)                  |
-| Content filter         | ✅    | runs inside stages 2, 3 and the rating page              | [0010](adr/0010-hard-content-filter.md)                  |
+| Stage                  | Built    | Command                                                             | ADR                                                      |
+| ---------------------- | -------- | ------------------------------------------------------------------- | -------------------------------------------------------- |
+| 1. Harvest             | ✅       | `pnpm harvest` (free): DYK, or Unusual articles by topic            | [0013](adr/0013-content-to-bank.md)                      |
+| 2. Reword + entailment | ✅       | `pnpm reword`                                                       | [0006](adr/0006-reword-stage-design.md)                  |
+| 2b. Fun ranking        | ✅       | `pnpm rank-truths`                                                  | [0009](adr/0009-fun-selection-and-plausibility-floor.md) |
+| 3. Generate lies       | ✅       | `pnpm generate-lies`                                                | [0008](adr/0008-generate-lies-and-gate-2.md)             |
+| 4. Verify lies         | ✅       | `pnpm verify` (also the golden-set eval)                            | [0007](adr/0007-verify-stage-design.md)                  |
+| 5. Assemble rounds     | ✅       | `pnpm assemble`                                                     | [0011](adr/0011-assemble-stage-design.md)                |
+| 6. Dedupe              | ✅ basic | inside `build-days`: no reused article, no near-duplicate statement | [0013](adr/0013-content-to-bank.md)                      |
+| 7. Human review        | ✅       | `pnpm review page`, then `pnpm review apply`                        | [0013](adr/0013-content-to-bank.md)                      |
+| Day assembly           | ✅       | `pnpm build-days`                                                   | [0013](adr/0013-content-to-bank.md)                      |
+| Publish                | ✅       | `pnpm publish-days`                                                 | [0012](adr/0012-hosting-vercel-neon.md)                  |
+| Content filter         | ✅       | runs inside stages 2, 3 and the rating page                         | [0010](adr/0010-hard-content-filter.md)                  |
 
 ## Measurements so far
 

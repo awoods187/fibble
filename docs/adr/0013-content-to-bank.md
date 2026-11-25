@@ -40,7 +40,11 @@ unusual-articles --topics …`).
      dates. It never overwrites a day, and never reuses a Wikipedia article already in the
      bank.
    - It rebalances lie positions so each card is the lie equally often across the batch.
-   - Puzzles are numbered from the first bank day; there's no launch date yet.
+   - Puzzles are numbered from `LAUNCH_DATE` (2026-11-25, Andy's private launch: Fibble #1).
+     With an empty bank, the first day built is today; no day before launch is built.
+   - **Basic dedupe** (PRD stage 6): besides article reuse, a round is skipped if any of its
+     statements shares most of its words with one already in the bank or the batch.
+     Embedding similarity can replace this later.
    - Every day passes the publisher's checks before it's written.
 
 ## Consequences
@@ -49,5 +53,4 @@ unusual-articles --topics …`).
   day-to-round mapping.
 - **A day needs all five categories.** The weakest category sets how many days a batch
   makes, so harvesting should be planned per category.
-- **Puzzle numbers will be recomputed** when a launch date is chosen, before anything is
-  public.
+- **Changing `LAUNCH_DATE` renumbers every day.** Only do it before anything is public.
