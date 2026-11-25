@@ -53,6 +53,8 @@ describe('scanText', () => {
       'postgresql://u:<password>@host/db',
       'postgres://u:${PGPASSWORD}@host/db',
       'sk-ant-short',
+      'SEARCH_API_KEY="op://Private/fibble-tavily/credential"',
+      'DATABASE_URL_PUBLISHER="op://Private/fibble-neon-publisher/connection string" op run -- x',
     ].join('\n');
     expect(rules(text)).toEqual([]);
   });

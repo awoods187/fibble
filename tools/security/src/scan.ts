@@ -31,6 +31,7 @@ export const SECRET_ENV_NAMES = [
   'SEARCH_API_KEY',
   'TAVILY_API_KEY',
   'DATABASE_URL',
+  'DATABASE_URL_PUBLISHER',
 ] as const;
 
 /** Placeholder passwords that docs and examples use in connection strings. */
@@ -65,7 +66,8 @@ export const VALUE_RULES: Rule[] = [
     description: 'A secret env var assigned a literal value',
     pattern: new RegExp(
       // [ \\t] not \\s: with the m flag, \\s would run on into the next line.
-      `^[ \\t]*(?:export[ \\t]+)?(?:${SECRET_ENV_NAMES.join('|')})[ \\t]*=[ \\t]*['"]?([^\\s'"#$][^\\s'"#]{7,})`,
+      // (?!op://) lets 1Password references through: they name a secret, they aren't one.
+      `^[ \\t]*(?:export[ \\t]+)?(?:${SECRET_ENV_NAMES.join('|')})[ \\t]*=[ \\t]*['"]?(?!op://)([^\\s'"#$][^\\s'"#]{7,})`,
       'gm',
     ),
   },
