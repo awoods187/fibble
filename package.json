@@ -1,0 +1,31 @@
+{
+  "name": "fibble",
+  "private": true,
+  "description": "A daily Two Truths and a Lie trivia game.",
+  "license": "AGPL-3.0-only",
+  "packageManager": "pnpm@12.23.0",
+  "engines": {
+    "node": ">=26.13.1 <27",
+    "pnpm": ">=12.23.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "validate:content": "pnpm --filter @fibble/pipeline validate:content"
+  },
+  "devDependencies": {
+    "@eslint/js": "catalog:",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "prettier": "catalog:",
+    "turbo": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:"
+  }
+}

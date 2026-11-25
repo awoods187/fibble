@@ -1,0 +1,152 @@
+{
+  "sample": true,
+  "date": "2026-11-25",
+  "puzzleNumber": 2,
+  "rounds": [
+    {
+      "category": "History",
+      "difficulty": 1,
+      "lieIndex": 0,
+      "lieNote": "[SAMPLE] Why the History lie sounded true.",
+      "statements": [
+        {
+          "text": "[SAMPLE] History lie. This placeholder stands in for a reworded Wikipedia fact of typical length."
+        },
+        {
+          "text": "[SAMPLE] History truth 1. This placeholder stands in for a reworded Wikipedia fact of typical length.",
+          "expansion": "[SAMPLE] One-sentence expansion for History truth 1.",
+          "source": {
+            "title": "[SAMPLE] Placeholder article",
+            "url": "https://en.wikipedia.org/wiki/Wikipedia:Sandbox",
+            "revisionId": 1
+          }
+        },
+        {
+          "text": "[SAMPLE] History truth 2. This placeholder stands in for a reworded Wikipedia fact of typical length.",
+          "expansion": "[SAMPLE] One-sentence expansion for History truth 2.",
+          "source": {
+            "title": "[SAMPLE] Placeholder article",
+            "url": "https://en.wikipedia.org/wiki/Wikipedia:Sandbox",
+            "revisionId": 1
+          }
+        }
+      ]
+    },
+    {
+      "category": "Science & Nature",
+      "difficulty": 2,
+      "lieIndex": 2,
+      "lieNote": "[SAMPLE] Why the Science & Nature lie sounded true.",
+      "statements": [
+        {
+          "text": "[SAMPLE] Science & Nature truth 1. This placeholder stands in for a reworded Wikipedia fact of typical length.",
+          "expansion": "[SAMPLE] One-sentence expansion for Science & Nature truth 1.",
+          "source": {
+            "title": "[SAMPLE] Placeholder article",
+            "url": "https://en.wikipedia.org/wiki/Wikipedia:Sandbox",
+            "revisionId": 1
+          }
+        },
+        {
+          "text": "[SAMPLE] Science & Nature truth 2. This placeholder stands in for a reworded Wikipedia fact of typical length.",
+          "expansion": "[SAMPLE] One-sentence expansion for Science & Nature truth 2.",
+          "source": {
+            "title": "[SAMPLE] Placeholder article",
+            "url": "https://en.wikipedia.org/wiki/Wikipedia:Sandbox",
+            "revisionId": 1
+          }
+        },
+        {
+          "text": "[SAMPLE] Science & Nature lie. This placeholder stands in for a reworded Wikipedia fact of typical length."
+        }
+      ]
+    },
+    {
+      "category": "Geography & Places",
+      "difficulty": 3,
+      "lieIndex": 1,
+      "lieNote": "[SAMPLE] Why the Geography & Places lie sounded true.",
+      "statements": [
+        {
+          "text": "[SAMPLE] Geography & Places truth 1. This placeholder stands in for a reworded Wikipedia fact of typical length.",
+          "expansion": "[SAMPLE] One-sentence expansion for Geography & Places truth 1.",
+          "source": {
+            "title": "[SAMPLE] Placeholder article",
+            "url": "https://en.wikipedia.org/wiki/Wikipedia:Sandbox",
+            "revisionId": 1
+          }
+        },
+        {
+          "text": "[SAMPLE] Geography & Places lie. This placeholder stands in for a reworded Wikipedia fact of typical length."
+        },
+        {
+          "text": "[SAMPLE] Geography & Places truth 2. This placeholder stands in for a reworded Wikipedia fact of typical length.",
+          "expansion": "[SAMPLE] One-sentence expansion for Geography & Places truth 2.",
+          "source": {
+            "title": "[SAMPLE] Placeholder article",
+            "url": "https://en.wikipedia.org/wiki/Wikipedia:Sandbox",
+            "revisionId": 1
+          }
+        }
+      ]
+    },
+    {
+      "category": "Sports & Games",
+      "difficulty": 4,
+      "lieIndex": 0,
+      "lieNote": "[SAMPLE] Why the Sports & Games lie sounded true.",
+      "statements": [
+        {
+          "text": "[SAMPLE] Sports & Games lie. This placeholder stands in for a reworded Wikipedia fact of typical length."
+        },
+        {
+          "text": "[SAMPLE] Sports & Games truth 1. This placeholder stands in for a reworded Wikipedia fact of typical length.",
+          "expansion": "[SAMPLE] One-sentence expansion for Sports & Games truth 1.",
+          "source": {
+            "title": "[SAMPLE] Placeholder article",
+            "url": "https://en.wikipedia.org/wiki/Wikipedia:Sandbox",
+            "revisionId": 1
+          }
+        },
+        {
+          "text": "[SAMPLE] Sports & Games truth 2. This placeholder stands in for a reworded Wikipedia fact of typical length.",
+          "expansion": "[SAMPLE] One-sentence expansion for Sports & Games truth 2.",
+          "source": {
+            "title": "[SAMPLE] Placeholder article",
+            "url": "https://en.wikipedia.org/wiki/Wikipedia:Sandbox",
+            "revisionId": 1
+          }
+        }
+      ]
+    },
+    {
+      "category": "Arts & Entertainment",
+      "difficulty": 5,
+      "lieIndex": 2,
+      "lieNote": "[SAMPLE] Why the Arts & Entertainment lie sounded true.",
+      "statements": [
+        {
+          "text": "[SAMPLE] Arts & Entertainment truth 1. This placeholder stands in for a reworded Wikipedia fact of typical length.",
+          "expansion": "[SAMPLE] One-sentence expansion for Arts & Entertainment truth 1.",
+          "source": {
+            "title": "[SAMPLE] Placeholder article",
+            "url": "https://en.wikipedia.org/wiki/Wikipedia:Sandbox",
+            "revisionId": 1
+          }
+        },
+        {
+          "text": "[SAMPLE] Arts & Entertainment truth 2. This placeholder stands in for a reworded Wikipedia fact of typical length.",
+          "expansion": "[SAMPLE] One-sentence expansion for Arts & Entertainment truth 2.",
+          "source": {
+            "title": "[SAMPLE] Placeholder article",
+            "url": "https://en.wikipedia.org/wiki/Wikipedia:Sandbox",
+            "revisionId": 1
+          }
+        },
+        {
+          "text": "[SAMPLE] Arts & Entertainment lie. This placeholder stands in for a reworded Wikipedia fact of typical length."
+        }
+      ]
+    }
+  ]
+}
