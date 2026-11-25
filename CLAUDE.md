@@ -27,6 +27,8 @@ pnpm harvest --months 2024-05 --out out/candidates.jsonl   # stage 1, free Wikip
 pnpm reword --in out/candidates.jsonl --out out/truths.jsonl --budget 1   # stage 2, PAID (Claude)
 pnpm verify --golden <golden.json> --out out/eval.jsonl --budget 3      # stage 4 eval, PAID (Claude + Tavily)
 pnpm generate-lies --truths out/truths.jsonl --out out/lies.jsonl --verify --budget 3   # stages 3+4, PAID
+pnpm rating page --truths … --lies … --out out/rate.html   # local human-rating page (free, offline)
+pnpm rating report --key out/rate.key.json --ratings <download> --verified …   # human vs model
 pnpm build
 pnpm format              # Prettier write; CI runs format:check
 pnpm check:secrets       # secret scan of committable files (CI also scans the built bundle)

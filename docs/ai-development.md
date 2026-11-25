@@ -296,3 +296,32 @@ PR. A dry run costs nothing and caught a real gap.
   rater from preferring facts it recognizes. The honest next step is human labels.
 - **Watch for repeats across calls, not just within one.** Each set of 5 lies was varied, but
   across rounds Opus kept returning to the same towns and props.
+
+---
+
+## Session 7 (2026-11-25): A human rating page for plausibility
+
+**Model:** Claude Opus 5.5 in Claude Code.
+**Branch:** `feat/rating-page`.
+
+The model's plausibility rater scored most invented lies 2 out of 5 (ADR 0008), so Andy asked
+for a page to rate them himself. The design choices:
+
+- **It's a local file, not a hosted page.** It shows unreleased truths and lies, and the
+  private repo's rule is that its content never goes to an outside service. It is one
+  self-contained HTML file with a CSP that blocks all network requests, and progress saves
+  in the browser.
+- **It's blind.** Truths and lies are shuffled and given opaque ids. The answer key is a
+  separate file. A test checks that the page never contains "truth", "lie" or a source id.
+- **"I already knew" is a checkbox.** Recognising a fact is exactly the bias the model rater
+  has, so those ratings are left out of the comparison.
+- **`pnpm rating report`** compares the human ratings with the model's, lie by lie.
+
+Claude checked the built page in headless Chrome: it renders, has 5 options, and its script
+runs. A unit test can't show that.
+
+### What went wrong
+
+The file-writing tool turned the ` ` escapes in a regular expression into literal
+line-separator characters, which broke the parse. Typecheck caught it, and a short script
+restored the escapes.
