@@ -3,7 +3,10 @@
  *
  *   pnpm rating page --truths out/truths.jsonl --lies out/lies.jsonl --out out/rate.html
  *   pnpm rating report --key out/rate.key.json --ratings ~/Downloads/rate-…-ratings.json \
- *                      --verified out/lies.verified.jsonl
+ *                      --verified out/lies.verified.jsonl [--truths out/truths.ranked.jsonl]
+ *
+ * With --truths from `pnpm rank-truths`, the report also compares the ranker's tiers with
+ * your "good for the game" ratings.
  *
  * `page` writes a self-contained HTML file and, beside it, the answer key (<out>.key.json).
  * Open the HTML from disk: it makes no network requests. Both files are unreleased puzzle
@@ -22,7 +25,7 @@ import {
 } from '../src/rating/page';
 import { ratingReport } from '../src/rating/report';
 import { RewordedTruthSchema } from '../src/reword/schemas';
-import { VerifiedLieSchema } from '../src/verify/schemas';
+import { MIN_PLAUSIBILITY, VerifiedLieSchema } from '../src/verify/schemas';
 
 const base = process.env.INIT_CWD ?? process.cwd();
 const [mode, ...rest] = process.argv.slice(2);
@@ -91,14 +94,20 @@ if (mode === 'page') {
       v.plausibility === undefined ? [] : [[v.lie.id, v.plausibility] as const],
     ),
   );
-  const r = ratingReport(keyFile.key as Record<string, RatingKeyEntry>, ratings, model);
+  const truthsForTiers = values.truths
+    ? await jsonl(path(values.truths, 'truths'), RewordedTruthSchema)
+    : [];
+  const tiers = new Map(
+    truthsForTiers.flatMap((t) => (t.fun ? [[t.candidateId, t.fun.tier] as const] : [])),
+  );
+  const r = ratingReport(keyFile.key as Record<string, RatingKeyEntry>, ratings, model, tiers);
   const pct = (x: number) => `${Math.round(100 * x)}%`;
   console.log(`Set ${r.setId}: ${r.rated} rated, ${r.knewExcluded} excluded as already known`);
   console.log(
-    `  truths: n=${r.truths.n}, mean ${r.truths.mean.toFixed(2)}, ${pct(r.truths.passRate)} at 3+, ${JSON.stringify(r.truths.dist)}`,
+    `  truths: n=${r.truths.n}, mean ${r.truths.mean.toFixed(2)}, ${pct(r.truths.passRate)} at ${MIN_PLAUSIBILITY}+, ${JSON.stringify(r.truths.dist)}`,
   );
   console.log(
-    `  lies:   n=${r.lies.n}, mean ${r.lies.mean.toFixed(2)}, ${pct(r.lies.passRate)} at 3+, ${JSON.stringify(r.lies.dist)}`,
+    `  lies:   n=${r.lies.n}, mean ${r.lies.mean.toFixed(2)}, ${pct(r.lies.passRate)} at ${MIN_PLAUSIBILITY}+, ${JSON.stringify(r.lies.dist)}`,
   );
   const f = (x: typeof r.fun.truths) =>
     x.rated
@@ -106,6 +115,16 @@ if (mode === 'page') {
       : 'not rated';
   console.log(`\n  Good for the game? truths: ${f(r.fun.truths)}`);
   console.log(`                     lies:   ${f(r.fun.lies)}`);
+  if (Object.keys(r.rankerVsHuman).length) {
+    console.log('\n  Ranker tier vs your rating (truths):');
+    for (const tier of ['great', 'fine', 'boring'] as const) {
+      const row = r.rankerVsHuman[tier];
+      if (row)
+        console.log(
+          `    ranker ${tier.padEnd(6)} → you: great ${row.great} · fine ${row.fine} · boring ${row.boring}`,
+        );
+    }
+  }
   if (r.compared) {
     console.log(
       `\n  Model vs you on ${r.compared} lies: model is ${r.meanModelMinusHuman.toFixed(2)} points ${r.meanModelMinusHuman < 0 ? 'harsher' : 'kinder'} on average`,

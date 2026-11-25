@@ -141,7 +141,7 @@ async function retrieve(
  * write queries (Haiku), retrieve evidence (Wikipedia and Tavily), and judge it
  * (Sonnet, a different model from the Opus generator).
  * A lie passes only if it was judged on real evidence as contradicted or
- * no-evidence, with plausibility 3+. Anything that goes wrong fails closed.
+ * no-evidence, with plausibility at or above MIN_PLAUSIBILITY. Anything that goes wrong fails closed.
  */
 export async function verifyLies(
   lies: LieInput[],
