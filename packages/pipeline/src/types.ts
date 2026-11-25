@@ -1,4 +1,4 @@
-import type { Category, LieIndex, Round } from '@fibble/shared';
+import type { Category } from '@fibble/shared';
 import type { z } from 'zod';
 import type {
   CandidateSchema,
@@ -8,7 +8,7 @@ import type {
   TraceSchema,
 } from './schemas';
 import type { RewordedTruthSchema } from './reword/schemas';
-import type { VerifiedLie } from './verify/schemas';
+import type { CandidateRound } from './assemble/schemas';
 
 /**
  * Typed contracts for the 7 pipeline stages in PRD section 5.
@@ -67,20 +67,7 @@ export type { Evidence, LieInput, VerificationLabel, VerifiedLie } from './verif
 
 /* ---------- Stage 5: assemble and calibrate ---------- */
 
-export interface AssembleInput {
-  truths: [RewordedTruth, RewordedTruth];
-  lies: VerifiedLie[];
-}
-
-export interface CandidateRound {
-  round: Round;
-  /** Fraction of style-spotter guesses that found the lie. */
-  spotterDetectionRate: number;
-  heuristicFlags: string[];
-  predictedFoolRate: number;
-  lieIndex: LieIndex;
-  trace: Trace;
-}
+export type { CandidateRound } from './assemble/schemas';
 
 /* ---------- Stage 6: dedupe ---------- */
 
