@@ -16,7 +16,8 @@
     "harvest": "tsx scripts/harvest.ts",
     "reword": "tsx scripts/reword.ts",
     "verify": "tsx scripts/verify.ts",
-    "generate-lies": "tsx scripts/generate-lies.ts"
+    "generate-lies": "tsx scripts/generate-lies.ts",
+    "rating": "tsx scripts/rating.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "catalog:",
