@@ -2,7 +2,7 @@
 stage: generate-lies
 version: example-v1
 model: claude-opus-5-5
-inputs: [category, truth_1, truth_2, count]
+inputs: [category, truth_1, truth_2, count, avoid]
 output: GeneratedLies (src/generate/schemas.ts), enforced with structured outputs
 ---
 
@@ -42,6 +42,13 @@ really could have been true", never "that's a cheap trick".
 6. **Avoid sensitive ground.** No tragedies, violence or disease played for surprise; no current
    politics, religion or medical advice; nothing sexual.
 7. **Stay in category.** The lie must clearly belong to the round's category.
+8. **Match the truths' wow, not just their style.** The truths were chosen because players
+   would say "no way!". Your lie has to compete with them: something vivid and concrete that
+   a player would want to tell a friend about. Mild administrative quirks (a town paying
+   officials in beer, a council rule about lamplighters) are too dull, and a dull card is
+   easy to dismiss as the lie.
+9. **Don't repeat the batch.** Avoid the places, people, institutions and props listed as
+   already used. Each round should feel like a different corner of the world.
 
 ## The "why it sounded true" note
 
@@ -68,5 +75,8 @@ Category: {{category}}
 
 Truth 1: {{truth_1}}
 Truth 2: {{truth_2}}
+
+Already used in other rounds of this batch (don't reuse their places, people or props):
+{{avoid}}
 
 Write {{count}} candidate lies for this round.

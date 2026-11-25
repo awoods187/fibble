@@ -8,6 +8,7 @@
  *   --out        generation records JSONL (required). With --verify, also writes
  *                <out>.verified.jsonl and the gate 2 report <out>.gate2.json
  *   --pairs      use at most this many truth pairs
+ *   --min-fun    only truths ranked at least this tier by `pnpm rank-truths` (great | fine)
  *   --count      lies per pair (default 5, the PRD's number)
  *   --verify     run stage 4 on every lie that passes the code checks
  *   --budget     one cap for generation and verification together, in USD (default 1)
@@ -33,6 +34,7 @@ import {
   pairTruths,
 } from '../src/generate/run';
 import { WikiClient } from '../src/harvest/wiki-client';
+import { atLeast } from '../src/rank/run';
 import { AnthropicLlmClient, Budget } from '../src/llm';
 import { MODELS, PRICES } from '../src/models';
 import { EXAMPLE_PROMPTS_DIR, loadPrompt, render } from '../src/prompts';
@@ -47,6 +49,7 @@ const { values } = parseArgs({
     truths: { type: 'string' },
     out: { type: 'string' },
     pairs: { type: 'string' },
+    'min-fun': { type: 'string' },
     count: { type: 'string', default: String(DEFAULT_LIE_COUNT) },
     verify: { type: 'boolean', default: false },
     budget: { type: 'string', default: '1' },
@@ -60,6 +63,7 @@ const Args = z.object({
   truths: z.string().min(1),
   out: z.string().min(1),
   pairs: z.coerce.number().int().positive().optional(),
+  'min-fun': z.enum(['great', 'fine']).optional(),
   count: z.coerce.number().int().min(1).max(10),
   verify: z.boolean(),
   budget: z.coerce.number().positive().max(50),
@@ -85,7 +89,13 @@ const truths = (await readFile(resolve(base, args.truths), 'utf8'))
   .split('\n')
   .filter((l) => l.trim())
   .map((l) => RewordedTruthSchema.parse(JSON.parse(l)));
-const pairs = pairTruths(truths).slice(0, args.pairs);
+const minFun = args['min-fun'];
+const chosen = minFun ? atLeast(truths, minFun) : truths;
+if (minFun)
+  console.log(
+    `Using ${chosen.length} of ${truths.length} truths ranked ${minFun}${minFun === 'fine' ? ' or great' : ''}`,
+  );
+const pairs = pairTruths(chosen).slice(0, args.pairs);
 const prompt = await loadPrompt(promptsDir, 'generate-lies');
 
 if (args['dry-run']) {
