@@ -208,6 +208,7 @@ export async function assembleRounds(
         truthIds: record.truthIds,
         lieId: lie.id,
         spotterDetectionRate: best.spotterDetectionRate,
+        plausibility: best.plausibility,
         heuristicFlags: best.heuristicFlags,
         predictedFoolRate: foolRate,
         alternates: ranked.filter((s) => s.lieId !== best.lieId),
