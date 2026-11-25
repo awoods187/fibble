@@ -34,6 +34,9 @@ export async function getPlayablePuzzle(
   return puzzle ? { ok: true, puzzle } : notFound;
 }
 
+/** Answer bodies are { "choice": n }; anything bigger is abuse, not a player. */
+export const MAX_ANSWER_BODY_BYTES = 1024;
+
 const json = (body: unknown, status = 200) =>
   Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
 
@@ -56,9 +59,14 @@ export async function handleAnswer(
   if (!(round >= 1 && round <= ROUNDS_PER_PUZZLE)) {
     return json({ error: `Round must be 1 to ${ROUNDS_PER_PUZZLE}` }, 400);
   }
+  // A valid body is ~12 bytes. Refuse anything large before reading it all.
+  const tooLarge = json({ error: `Body must be under ${MAX_ANSWER_BODY_BYTES} bytes` }, 413);
+  if (Number(request.headers.get('content-length') ?? 0) > MAX_ANSWER_BODY_BYTES) return tooLarge;
   let body: unknown;
   try {
-    body = await request.json();
+    const text = await request.text();
+    if (new TextEncoder().encode(text).byteLength > MAX_ANSWER_BODY_BYTES) return tooLarge;
+    body = JSON.parse(text);
   } catch {
     return json({ error: 'Body must be JSON: { "choice": 0 | 1 | 2 }' }, 400);
   }
