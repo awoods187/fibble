@@ -16,7 +16,8 @@
     "test": "turbo run test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "validate:content": "pnpm --filter @fibble/pipeline validate:content"
+    "validate:content": "pnpm --filter @fibble/pipeline validate:content",
+    "harvest": "pnpm --filter @fibble/pipeline harvest"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",

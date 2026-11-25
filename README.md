@@ -90,11 +90,17 @@ pnpm dev                # http://localhost:3000 shows a sample round
 | `pnpm typecheck`        | TypeScript strict-mode checks                      |
 | `pnpm test`             | Vitest unit and API tests                          |
 | `pnpm validate:content` | Check `content-example/` against the puzzle schema |
+| `pnpm harvest`          | Pipeline stage 1: harvest DYK hooks (see below)    |
 | `pnpm format`           | Format with Prettier                               |
 
 The app reads the three sample days in [`content-example/`](content-example), so no
 database or API keys are needed to run it. Copy `.env.example` to `.env.local` only when
 working on the pipeline.
+
+`pnpm harvest --months 2024-05 --limit 100 --out out/candidates.jsonl` reads Wikipedia's
+"Did you know…" archive for those months and writes candidate truths with their source
+revision, evidence text and a living-person flag. It calls only free Wikipedia and Wikidata
+APIs, politely, and caches every response in `.cache/wikipedia/`.
 
 ## Repo layout
 

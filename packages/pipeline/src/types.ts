@@ -1,5 +1,12 @@
 import type { Category, LieIndex, Round, Source } from '@fibble/shared';
-import type { ModelId } from './models';
+import type { z } from 'zod';
+import type {
+  CandidateSchema,
+  HarvestMonthSchema,
+  HarvestSourceSchema,
+  StageNameSchema,
+  TraceSchema,
+} from './schemas';
 
 /**
  * Typed contracts for the 7 pipeline stages in PRD section 5.
@@ -7,15 +14,9 @@ import type { ModelId } from './models';
  * back to its source revision, prompt version and model.
  */
 
-export interface Trace {
-  stage: StageName;
-  promptVersion: string;
-  model?: ModelId;
-  createdAt: string;
-}
+export type Trace = z.infer<typeof TraceSchema>;
 
-export type StageName =
-  'harvest' | 'reword' | 'generateLies' | 'verify' | 'assemble' | 'dedupe' | 'review';
+export type StageName = z.infer<typeof StageNameSchema>;
 
 /** A pipeline stage: an async function from one typed record set to the next. */
 export type Stage<In, Out> = (input: In, ctx: StageContext) => Promise<Out>;
@@ -30,27 +31,18 @@ export interface StageContext {
 
 /* ---------- Stage 1: harvest ---------- */
 
-export type HarvestSource = 'dyk' | 'unusual-articles';
+export type HarvestSource = z.infer<typeof HarvestSourceSchema>;
+export type HarvestMonth = z.infer<typeof HarvestMonthSchema>;
 
 export interface HarvestInput {
   source: HarvestSource;
-  /** e.g. DYK archive months to read, like "2024-05". */
-  months: string[];
+  /** DYK archive months to read, like "2024-05". */
+  months: HarvestMonth[];
+  /** Stop after this many candidates. */
   limit: number;
 }
 
-export interface Candidate {
-  id: string;
-  harvestedFrom: HarvestSource;
-  /** The raw hook or claim, verbatim from Wikipedia. Never shipped as-is. */
-  rawClaim: string;
-  article: Source;
-  /** Lead and relevant section, used as evidence for later stages. */
-  contextText: string;
-  /** From Wikidata; living people are routed to rejection. */
-  involvesLivingPerson: boolean;
-  trace: Trace;
-}
+export type Candidate = z.infer<typeof CandidateSchema>;
 
 /* ---------- Stage 2: select and reword ---------- */
 

@@ -9,8 +9,8 @@ the fib. Truths are reworded from Wikipedia; lies are written by an LLM, verifie
 model, and approved by a human. The product requirements live in `docs/PRD.md`, which is
 **git-ignored and local only**. Ask Andy for a copy if it's missing; never commit it.
 
-Status: pre-alpha. Week 1 foundations are built. Swipe play, reveals, the database, the PWA
-shell and real pipeline calls are not.
+Status: pre-alpha. Week 1 foundations and pipeline stage 1 (harvest) are built. Swipe play,
+reveals, the database, the PWA shell and LLM pipeline calls are not.
 
 ## Commands
 
@@ -23,6 +23,7 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm validate:content    # checks content-example/ against the schema
+pnpm harvest --months 2024-05 --out out/candidates.jsonl   # stage 1, free Wikipedia APIs
 pnpm build
 pnpm format              # Prettier write; CI runs format:check
 ```
@@ -35,7 +36,7 @@ Scope to one package with `pnpm --filter @fibble/web test` (or `@fibble/shared`,
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `apps/web/`          | Next.js App Router game. `src/app/api/` route handlers, `src/lib/content/` ContentSource, `src/lib/puzzle-service.ts` date gate and answer logic |
 | `packages/shared/`   | Zod schemas (`schema.ts`), categories, date gating, `toPublicPuzzle`, `buildAnswerResult`, `buildShareText`                                      |
-| `packages/pipeline/` | Typed stages (`src/stages/`), `models.ts`, `prompts/example-v1/`, `evals/`, `validate:content`                                                   |
+| `packages/pipeline/` | Typed stages (`src/stages/`), harvest (`src/harvest/`), record schemas (`src/schemas.ts`), `models.ts`, `prompts/example-v1/`, `evals/`          |
 | `tools/review/`      | Placeholder for the local review UI                                                                                                              |
 | `content-example/`   | Three sample days, `"sample": true`                                                                                                              |
 | `docs/`              | `architecture.md`, `adr/`, `ai-development.md` (and the local-only `PRD.md`)                                                                     |
@@ -43,7 +44,8 @@ Scope to one package with `pnpm --filter @fibble/web test` (or `@fibble/shared`,
 ## Rules
 
 1. **Never commit secrets.** API keys, database URLs and tokens go in `.env.local` (git-ignored)
-   or CI/Vercel secrets. `.env.example` holds variable names only.
+   or CI/Vercel secrets. `.env.example` holds variable names only. Claude needs no key: use
+   `ant auth login` locally; CI uses workload identity federation (ADR 0005).
 2. **Never commit real puzzles.** Real and future puzzle data belongs in the private
    `fibble-content` repo. Only `content-example/` (marked `"sample": true`) is public;
    `content/` is git-ignored as a safety net.
@@ -66,3 +68,6 @@ Scope to one package with `pnpm --filter @fibble/web test` (or `@fibble/shared`,
 10. **Git:** work on a branch, never push to `main`, use Conventional Commits
     (`feat:`, `fix:`, `chore:`, `docs:`, `test:`, `ci:`), and add a session entry to
     `docs/ai-development.md` for significant LLM-assisted work.
+11. **Be polite to Wikipedia.** Every Wikipedia and Wikidata call goes through `WikiClient`
+    (`packages/pipeline/src/harvest/wiki-client.ts`): descriptive User-Agent, one request at a
+    time, `maxlag`, backoff and an on-disk cache. Tests use a fake `fetch`, never the network.
