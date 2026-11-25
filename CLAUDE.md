@@ -9,8 +9,8 @@ the fib. Truths are reworded from Wikipedia; lies are written by an LLM, verifie
 model, and approved by a human. The product requirements live in `docs/PRD.md`, which is
 **git-ignored and local only**. Ask Andy for a copy if it's missing; never commit it.
 
-Status: pre-alpha. Week 1 foundations and pipeline stages 1 (harvest) and 2 (reword) are built. Swipe play,
-reveals, the database, the PWA shell and stages 3 to 7 are not.
+Status: pre-alpha. Week 1 foundations and pipeline stages 1 (harvest), 2 (reword) and 4 (verify) are built. Swipe play,
+reveals, the database, the PWA shell and stages 3, 5, 6 and 7 are not.
 
 ## Commands
 
@@ -25,6 +25,7 @@ pnpm test
 pnpm validate:content    # checks content-example/ against the schema
 pnpm harvest --months 2024-05 --out out/candidates.jsonl   # stage 1, free Wikipedia APIs
 pnpm reword --in out/candidates.jsonl --out out/truths.jsonl --budget 1   # stage 2, PAID (Claude)
+pnpm verify --golden <golden.json> --out out/eval.jsonl --budget 3      # stage 4 eval, PAID (Claude + Tavily)
 pnpm build
 pnpm format              # Prettier write; CI runs format:check
 pnpm check:secrets       # secret scan of committable files (CI also scans the built bundle)

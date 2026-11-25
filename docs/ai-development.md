@@ -228,3 +228,48 @@ both as having died (2024 and 2017), so the filter was right.
   nothing and stopped 29 drafts before any Opus call.
 - **Keep private output out of public logs.** The real statements stay in the private repo;
   this log and the PR hold only counts.
+
+---
+
+## Session 5 (2026-11-25): Stage 4 (verify) and the first golden-set eval
+
+**Model:** Claude Opus 5.5 in Claude Code.
+**Branch:** `feat/pipeline-verify`.
+
+### What happened
+
+Andy approved a plan to build verification before lie generation, so the judge could be
+measured before it is trusted. Claude built:
+
+- Tavily search, with plain `fetch` and a disk cache
+- Wikipedia search on the existing polite client
+- query writing, the judge, and the fail-closed pass rule
+- a golden-set eval runner
+
+It also wrote a private starter golden set: 22 truths and 20 invented lies, including four
+near-truth stress tests. The lies need Andy's review.
+
+### Measure, fix, measure again
+
+| Run | Change                                                     | False-lie rate | Cost  |
+| --- | ---------------------------------------------------------- | -------------- | ----- |
+| v1  | Search returned article introductions only                 | 13.6% (3/22)   | $0.44 |
+| v2  | Article section matching the lie; plausibility rated blind | **0%** (0/22)  | $0.58 |
+
+All three v1 misses had the same cause: the fact lived deep in the article, so the judge
+honestly saw "no evidence", and no-evidence passes. The fix was in retrieval, not the judge.
+
+### What's still open
+
+Plausibility. Rated after the evidence, it was biased by the evidence. Rated blind, the model
+still recognizes true facts and doubts invented ones, so most hand-written lies scored 2.
+A calibrated prompt helped only at the margins. Claude stopped tuning against its own lies:
+the real test is Opus-written lies in stage 3.
+
+### Lessons
+
+- **A golden set pays for itself on its first run.** Without it, the shallow retrieval would
+  have shipped, with a 1-in-7 chance of telling players a true fact was false.
+- **Writing lies is hard to get right.** While drafting the golden set, several "invented"
+  facts turned out to be true (rooftop bees at the Paris Opéra, Satie's identical suits).
+- **Don't tune a metric against data you wrote yourself.**

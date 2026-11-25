@@ -19,7 +19,8 @@
     "validate:content": "pnpm --filter @fibble/pipeline validate:content",
     "harvest": "pnpm --filter @fibble/pipeline harvest",
     "check:secrets": "pnpm --filter @fibble/security check",
-    "reword": "pnpm --filter @fibble/pipeline reword"
+    "reword": "pnpm --filter @fibble/pipeline reword",
+    "verify": "pnpm --filter @fibble/pipeline verify"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",

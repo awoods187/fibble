@@ -85,6 +85,28 @@ const ArticleResponse = z.object({
   }),
 });
 
+const SearchResponse = z.object({
+  query: z
+    .object({
+      pages: z.array(
+        z.object({
+          title: z.string(),
+          index: z.number().optional(),
+          fullurl: z.string().optional(),
+          extract: z.string().optional(),
+        }),
+      ),
+    })
+    .optional(),
+});
+
+export interface SearchHit {
+  title: string;
+  url: string;
+  /** The article's plain-text introduction. */
+  extract: string;
+}
+
 const EntitiesResponse = z.object({
   entities: z.record(z.string(), WikidataEntitySchema.extend({ missing: z.string().optional() })),
 });
@@ -208,6 +230,32 @@ export class WikiClient {
       extract: page.extract,
       wikidataId: page.pageprops?.wikibase_item,
     };
+  }
+
+  /**
+   * Full-text search (CirrusSearch) returning the top articles' introductions, best match first.
+   * A search with no results returns an empty list.
+   */
+  async searchArticles(query: string, limit = 3): Promise<SearchHit[]> {
+    const data = SearchResponse.parse(
+      await this.getJson(WIKIPEDIA_API, {
+        action: 'query',
+        generator: 'search',
+        gsrsearch: query,
+        gsrlimit: String(limit),
+        gsrnamespace: '0',
+        prop: 'extracts|info',
+        exintro: '1',
+        explaintext: '1',
+        exlimit: String(limit),
+        inprop: 'url',
+        redirects: '1',
+      }),
+    );
+    return (data.query?.pages ?? [])
+      .filter((p) => p.fullurl && p.extract)
+      .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+      .map((p) => ({ title: p.title, url: p.fullurl ?? '', extract: p.extract ?? '' }));
   }
 
   /** Map each requested title (as given) to its Wikidata item, following normalisation and redirects. */
