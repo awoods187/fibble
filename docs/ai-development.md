@@ -173,3 +173,58 @@ allowed values caught it before it ever ran in CI.
   `docs/security.md`.
 - **Robots files are requests, not controls.** They're worth having, but rate limiting at
   the edge is what enforces them.
+
+---
+
+## Session 4 (2026-11-25): Pipeline stage 2 (select and reword)
+
+**Model:** Claude Opus 5.5 in Claude Code.
+**Branch:** `feat/pipeline-reword`.
+
+### What happened
+
+Claude planned the stage, including two changes from ADR 0004 (classification folded into
+the draft, and one call at a time instead of batches) and a $2 cap for the first run. Andy
+approved it as proposed. Claude then built:
+
+- the prompts
+- a Claude client with structured outputs, cost tracking and a budget
+- free code checks, and the Opus entailment check
+- a CLI with `--dry-run`
+
+Tests use a fake client; no test calls the API.
+
+### The first real run
+
+60 May 2024 candidates, run locally with keyless auth, output to `fibble-content/out/`:
+
+| Step                                   | Count |
+| -------------------------------------- | ----- |
+| Filtered for living people (free)      | 17    |
+| Rejected by code checks after drafting | 29    |
+| Rejected by entailment                 | 2     |
+| **Accepted**                           | 12    |
+
+Total cost: **$0.19**, about $0.016 per accepted truth. Haiku made 43 calls for $0.03; Opus
+made 14 calls for $0.15.
+
+What the numbers show:
+
+- **Entailment is strict, as intended.** Both rejections were real but small differences:
+  "usually" where the source said "often", and "completed" where it said "designed".
+- **Low surprise scores** caused 22 rejections, and **the copy check** caused 9 (8 to 12
+  shared words). Those are the production prompt's first tuning targets.
+- **10 of 12 accepted truths were History.** The DYK source alone won't fill five categories
+  a day.
+
+### Checking a surprising pass, again
+
+Two hooks naming apparently modern people got past the living-person filter. Wikidata records
+both as having died (2024 and 2017), so the filter was right.
+
+### Lessons
+
+- **Make the cheap checks first.** The verbatim supporting-sentence and copy checks cost
+  nothing and stopped 29 drafts before any Opus call.
+- **Keep private output out of public logs.** The real statements stay in the private repo;
+  this log and the PR hold only counts.

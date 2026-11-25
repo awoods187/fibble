@@ -9,8 +9,8 @@ the fib. Truths are reworded from Wikipedia; lies are written by an LLM, verifie
 model, and approved by a human. The product requirements live in `docs/PRD.md`, which is
 **git-ignored and local only**. Ask Andy for a copy if it's missing; never commit it.
 
-Status: pre-alpha. Week 1 foundations and pipeline stage 1 (harvest) are built. Swipe play,
-reveals, the database, the PWA shell and LLM pipeline calls are not.
+Status: pre-alpha. Week 1 foundations and pipeline stages 1 (harvest) and 2 (reword) are built. Swipe play,
+reveals, the database, the PWA shell and stages 3 to 7 are not.
 
 ## Commands
 
@@ -24,6 +24,7 @@ pnpm typecheck
 pnpm test
 pnpm validate:content    # checks content-example/ against the schema
 pnpm harvest --months 2024-05 --out out/candidates.jsonl   # stage 1, free Wikipedia APIs
+pnpm reword --in out/candidates.jsonl --out out/truths.jsonl --budget 1   # stage 2, PAID (Claude)
 pnpm build
 pnpm format              # Prettier write; CI runs format:check
 pnpm check:secrets       # secret scan of committable files (CI also scans the built bundle)
@@ -80,3 +81,7 @@ Scope to one package with `pnpm --filter @fibble/web test` (or `@fibble/shared`,
     API routes or workflows. Never open `.env` files other than `.env.example`, never print
     env values, and run `pnpm check:secrets` before committing. New workflow actions are
     pinned to a full commit SHA. AGENTS.md repeats these rules for other coding agents.
+13. **Spending money.** Every Claude call goes through `LlmClient` (`src/llm.ts`) with a
+    `Budget`; tests use a fake client and never call the API. Paid commands take `--budget`
+    and support `--dry-run`. Ask before a real run, and run it from `fibble-content`: its
+    output is unreleased puzzle material, so only numbers go in public PRs and logs.
