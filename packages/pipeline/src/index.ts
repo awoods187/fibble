@@ -1,6 +1,12 @@
 export * from './errors';
 export * from './models';
 export type * from './types';
+export * from './schemas';
+export * from './harvest/dyk-parse';
+export * from './harvest/context';
+export * from './harvest/living';
+export * from './harvest/wiki-client';
+export * from './harvest/run';
 export { harvest } from './stages/harvest';
 export { reword } from './stages/reword';
 export { generateLies } from './stages/generate-lies';
