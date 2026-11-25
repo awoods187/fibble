@@ -30,7 +30,9 @@ last 30 years. The fun ranker rated it "fine", and the rating page had no way to
 - **Broader model flags too:**
   - `extremism`, `racism` and `atrocity` are new flags.
   - `politics` now covers parties, ideologies, movements and political leaders from any era.
-  - `violence` includes war and combat.
+  - `violence` covers killing, abuse and cruelty. **Military history is allowed** (Andy's
+    call): battles, forts, commanders and odd wartime episodes, as long as it isn't about
+    killing, atrocities or a political cause.
 
   The lie and ranking prompts carry the same rules.
 

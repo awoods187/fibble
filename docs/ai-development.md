@@ -377,3 +377,19 @@ the one that got through (ADR 0010).
   differently.
 - **Give reviewers a way to say "no".** A scale without "not appropriate" turns a content
   problem into a quality score and hides it.
+
+### Follow-up: correcting the plausibility floor
+
+Andy rated the fresh batch on the two-question page. Two findings changed the plan:
+
+- **The "wow" rule overshot.** The lies were rated great for the game 90% of the time, but
+  believable only 2.3 out of 5, so they'd be easy to spot. The rule now says "no less, and no
+  more".
+- **The model's plausibility now matched Andy to within 0.1 points.** The earlier "too harsh"
+  finding came mostly from the mixed scale. Claude had lowered the floor to 2 on that
+  evidence and put it back to 3 in the same PR.
+
+Andy also allowed military history that isn't about killing, atrocities or politics.
+
+**Lesson:** a measurement taken with a flawed instrument can point the wrong way. Recheck an
+earlier conclusion once the instrument is fixed.

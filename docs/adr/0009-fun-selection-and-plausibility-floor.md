@@ -1,4 +1,4 @@
-# ADR 0009: Choose truths by comparison, and lower the plausibility floor
+# ADR 0009: Choose truths by comparison; keep the plausibility floor at 3
 
 - **Status:** Accepted
 - **Date:** 2026-11-25
@@ -21,13 +21,32 @@ Andy rated 42 statements: 12 accepted truths and 30 Opus lies.
    may be `great`, and code enforces that cap even if the model ignores it.
    `pnpm generate-lies --min-fun great` writes lies only for the best truths. Comparing beats
    scoring one at a time, because the model has to discriminate.
-2. **Lies match the wow.** The prompt now says a lie must compete with the truths, not just
-   copy their style, and lists the lies already accepted in the batch so it doesn't reuse
-   their settings.
-3. **The plausibility floor is 2.** Only "obviously made up" fails. The PRD proposed 3, but the
-   model's 2 matched a human 4. The score stays on each verdict for ranking lies.
+2. **Lies match the truths' surprise: no less and no more.** The prompt lists the lies
+   already accepted in the batch, so rounds don't reuse settings.
+3. **The plausibility floor stays at 3** (see the v3 results below). It was briefly lowered
+   to 2 on the first ratings, which turned out to be confounded by the mixed scale.
 4. **Rating page v2** asks two questions, "Believable?" and "Good for the game?", because one
    scale was read as both. The report compares the ranker's tiers with the human's.
+
+## Results from the two-question page (v3: 16 truths, 10 lies)
+
+|                            | Truths | Lies                       |
+| -------------------------- | ------ | -------------------------- |
+| Rated "great" for the game | 31%    | 90%                        |
+| Believability (1–5)        | 3.6    | 2.3 (8 of 10 "I doubt it") |
+
+- **The first "match the wow" prompt overshot.** The lies became the most exciting _and_ the
+  least believable card in each round, which makes them easy to spot. The rule now says
+  "no less, and no more", and prefers the more believable version.
+- **On a clean scale, the model's plausibility matched the human to within 0.1 points.** The
+  earlier "1.7 points too harsh" came mostly from the mixed scale. A floor of 3 rejects
+  exactly the lies the human doubted, so it stays at 3.
+- **The ranker is fair at the top but undersells.** 3 of its 5 "great" picks were rated great
+  and none boring, but it ranked 2 of the human's 5 favourites "boring". Until there's more
+  data, lie generation uses great and fine truths (`--min-fun fine`, the default) and drops
+  only the boring ones.
+- **Next, in stage 5:** each round should use the lie whose believability is closest to its
+  truths'.
 
 ## Consequences
 
