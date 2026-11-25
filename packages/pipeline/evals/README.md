@@ -2,7 +2,7 @@
 
 The eval suite measures whether the pipeline makes good, correct rounds. Its
 published numbers are part of the README's "How we know they're good" section
-(PRD section 6). **Status: format defined, runner not built yet.**
+(PRD section 6). **Status:** the stage 4 runner is built (`pnpm verify --golden <file>`); the others aren't yet.
 
 ## What we measure
 
