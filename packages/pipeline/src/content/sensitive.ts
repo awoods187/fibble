@@ -1,5 +1,6 @@
 /**
  * Hard content filter (ADR 0010): topics Fibble never uses, whatever a model thinks.
+ * Sexual content (PRD section 5) was added when Unusual articles brought in a "Penis Park".
  *
  * Model flags missed a truth about a school's Nazi-themed parade, so this is a
  * code-level safety net that doesn't depend on a model noticing. It is applied to the
@@ -10,7 +11,7 @@
  * puts something hurtful in front of players. Add terms here when a review finds a miss.
  */
 
-export type SensitiveTopic = 'extremism' | 'atrocity' | 'racism';
+export type SensitiveTopic = 'extremism' | 'atrocity' | 'racism' | 'sexual';
 
 export interface SensitiveMatch {
   topic: SensitiveTopic;
@@ -29,6 +30,10 @@ const PATTERNS: [SensitiveTopic, RegExp][] = [
   [
     'racism',
     /\b(?:anti-?)?racis[mt]s?\b|\bracial(?:ly)? segregat\w*|\bsegregation\w*|\bapartheid\b|\bjim crow\b|\bslaver(?:y|s)\b|\bslaves?\b|\benslave\w*|\bslave trade\b|\blynch\w*|\bblackface\b|\beugenic\w*/gi,
+  ],
+  [
+    'sexual',
+    /\bpenis(?:es)?\b|\bphallic\b|\bvagina\w*|\bgenital\w*|\bsex\b|\bsexual\w*|\bporn\w*|\berotic\w*|\bbrothels?\b|\bprostitut\w*|\bstrip(?:per|club)s?\b|\bnud(?:e|ity|ist)\b/gi,
   ],
 ];
 

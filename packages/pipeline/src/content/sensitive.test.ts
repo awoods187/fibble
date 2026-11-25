@@ -27,6 +27,9 @@ describe('findSensitive', () => {
     ['racism', 'apartheid', 'Under apartheid, the stadium was split.'],
     ['racism', 'lynching', 'A lynching was reported in the paper.'],
     ['racism', 'eugenics', 'The society promoted eugenics.'],
+    ['sexual', 'penis', 'Also known as "Penis Park", the park is on the coast.'],
+    ['sexual', 'brothel', 'The building was once a brothel.'],
+    ['sexual', 'nude', 'A nude statue stood in the square.'],
   ])('flags %s ("%s")', (topic, match, text) => {
     expect(findSensitive(text)).toContainEqual({ topic, match });
   });
@@ -37,6 +40,8 @@ describe('findSensitive', () => {
       'A massive Slavic folk choir performed at the racing festival.',
       'Racial is not in the list, and nor is a racecourse or a navy.',
       'Cathedral masses were held on the Massachusetts coast.',
+      'Sussex sextants and sexton beetles were exhibited in Essex.',
+      'The strip of land was a nuisance to the Penistone railway.',
     ]) {
       expect(findSensitive(text), text).toEqual([]);
     }
