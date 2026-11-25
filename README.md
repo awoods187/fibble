@@ -91,6 +91,7 @@ pnpm dev                # http://localhost:3000 shows a sample round
 | `pnpm test`             | Vitest unit and API tests                           |
 | `pnpm validate:content` | Check `content-example/` against the puzzle schema  |
 | `pnpm harvest`          | Pipeline stage 1: harvest DYK hooks (see below)     |
+| `pnpm reword`           | Pipeline stage 2: reword and fact-check (**paid**)  |
 | `pnpm check:secrets`    | Scan for leaked keys ([security](docs/security.md)) |
 | `pnpm format`           | Format with Prettier                                |
 
