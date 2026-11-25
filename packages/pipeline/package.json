@@ -17,7 +17,8 @@
     "reword": "tsx scripts/reword.ts",
     "verify": "tsx scripts/verify.ts",
     "generate-lies": "tsx scripts/generate-lies.ts",
-    "rating": "tsx scripts/rating.ts"
+    "rating": "tsx scripts/rating.ts",
+    "rank-truths": "tsx scripts/rank-truths.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "catalog:",

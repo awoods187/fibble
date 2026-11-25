@@ -77,6 +77,14 @@ export const RewordedTruthSchema = z.strictObject({
   }),
   /** Every Claude call this truth cost, with its estimated price. */
   usage: z.array(CallUsageSchema),
+  /** Set by the fun-ranking step (src/rank), which compares truths in batches. */
+  fun: z
+    .strictObject({
+      tier: z.enum(['great', 'fine', 'boring']),
+      reason: z.string(),
+      promptVersion: z.string(),
+    })
+    .optional(),
   trace: TraceSchema,
 });
 

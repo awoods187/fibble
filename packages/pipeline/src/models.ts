@@ -8,6 +8,8 @@
 export const MODELS = {
   /** Opus: hardest creative work, where quality matters most. */
   generateLies: 'claude-opus-5-5',
+  /** Opus: sorts truths into great / fine / boring by comparing them in batches. */
+  rankFun: 'claude-opus-5-5',
   /** Opus: does the source support every detail of the reworded truth? */
   entailment: 'claude-opus-5-5',
   /** Haiku: turns a lie into 2 or 3 search queries for verification. */
