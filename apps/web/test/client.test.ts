@@ -92,3 +92,26 @@ describe('client api', () => {
     );
   });
 });
+
+describe('haptics', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('vibrates the named pattern unless turned off', async () => {
+    const { buzz, setHapticsOn } = await import('@/lib/client/haptics');
+    const vibrate = vi.fn(() => true);
+    vi.stubGlobal('navigator', { vibrate });
+    vi.stubGlobal('window', { localStorage: fakeStorage() });
+    buzz('wrong');
+    expect(vibrate).toHaveBeenLastCalledWith([15, 60, 15]);
+    setHapticsOn(false);
+    buzz('commit');
+    expect(vibrate).toHaveBeenCalledTimes(1);
+  });
+
+  it('does nothing where vibration is missing (iOS Safari)', async () => {
+    const { buzz } = await import('@/lib/client/haptics');
+    vi.stubGlobal('navigator', {});
+    vi.stubGlobal('window', { localStorage: fakeStorage() });
+    expect(() => buzz('perfect')).not.toThrow();
+  });
+});

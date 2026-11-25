@@ -8,6 +8,8 @@ import {
   stack,
 } from '@fibble/shared';
 import { useEffect, useRef, useState } from 'react';
+import { HapticsToggle } from './HapticsToggle';
+import { SwipeCard, type SwipeCardHandle } from './SwipeCard';
 
 interface Props {
   round: PublicRound;
@@ -30,14 +32,17 @@ const cardClass =
  * One round (PRD section 3). Three ways to play, same rules:
  * - Desktop: all three cards side by side; keys 1–3 focus a card, T or → marks it truth,
  *   L or ← makes it the lie.
- * - Mobile: a stack; Truth sends the top card to the tray, Skip sends it to the back,
- *   Lie locks the round. Swipes arrive in G2; the buttons stay as the accessible path.
+ * - Mobile: a stack; swipe right (Truth) sends the top card to the tray, up (Skip) sends it
+ *   to the back, left (Lie) locks the round. The buttons do the same, with the same motion.
  * - List view: radio buttons and "Lock in".
  */
 export function RoundPlay({ round, play, submitting, onTruth, onUntruth, onSkip, onLie }: Props) {
   const [listView, setListView] = useState(false);
   const [focused, setFocused] = useState<LieIndex>(0);
   const cardRefs = useRef<(HTMLElement | null)[]>([]);
+  const swipeRef = useRef<SwipeCardHandle>(null);
+  // Bumped when a Truth is refused on the last card, to replay the hint's nudge.
+  const [refusals, setRefusals] = useState(0);
   const locked = play.choice !== undefined;
   const lastCard = isLastCard(play);
 
@@ -151,18 +156,18 @@ export function RoundPlay({ round, play, submitting, onTruth, onUntruth, onSkip,
             />
           ))}
           {top !== undefined && (
-            <article
-              aria-label={`Card ${top + 1}`}
-              aria-live="polite"
-              className={`${cardClass} aspect-[3/4]`}
-            >
-              <span className="font-mono text-sm tracking-stamp text-silver-500" aria-hidden="true">
-                {pad(top)}
-              </span>
-              <p className="my-auto text-left text-[17px] leading-[1.4] text-silver-100">
-                {round.statements[top]?.text}
-              </p>
-            </article>
+            <SwipeCard
+              key={top}
+              ref={swipeRef}
+              card={top}
+              text={round.statements[top]?.text ?? ''}
+              truthRefused={lastCard}
+              disabled={locked || submitting}
+              onCommit={(a) =>
+                a === 'truth' ? onTruth(top) : a === 'lie' ? onLie(top) : onSkip(top)
+              }
+              onRefuse={() => setRefusals((n) => n + 1)}
+            />
           )}
         </div>
         {top !== undefined && (
@@ -170,7 +175,7 @@ export function RoundPlay({ round, play, submitting, onTruth, onUntruth, onSkip,
             <button
               type="button"
               disabled={locked || submitting}
-              onClick={() => onLie(top)}
+              onClick={() => swipeRef.current?.fling('lie')}
               className="flex-1 rounded-xl border border-fib/60 py-3 text-fib disabled:opacity-40"
             >
               ← Lie
@@ -178,15 +183,16 @@ export function RoundPlay({ round, play, submitting, onTruth, onUntruth, onSkip,
             <button
               type="button"
               disabled={locked || submitting || behind.length === 0}
-              onClick={() => onSkip(top)}
+              onClick={() => swipeRef.current?.fling('skip')}
               className="flex-1 rounded-xl border border-border py-3 text-silver-300 disabled:opacity-40"
             >
               ↑ Skip
             </button>
             <button
               type="button"
-              disabled={locked || submitting || lastCard}
-              onClick={() => onTruth(top)}
+              disabled={locked || submitting}
+              aria-describedby={lastCard ? 'last-card-hint' : undefined}
+              onClick={() => swipeRef.current?.fling('truth')}
               className="flex-1 rounded-xl border border-border py-3 text-silver-100 disabled:opacity-40"
             >
               Truth →
@@ -212,12 +218,18 @@ export function RoundPlay({ round, play, submitting, onTruth, onUntruth, onSkip,
       </div>
 
       {lastCard && !locked && (
-        <p role="status" className="text-sm text-silver-300">
+        <p
+          key={refusals}
+          id="last-card-hint"
+          role="status"
+          className={`text-sm text-silver-300 ${refusals > 0 ? 'motion-safe:animate-nudge' : ''}`}
+        >
           {LAST_CARD_HINT}
         </p>
       )}
       <div className="flex items-center gap-4">
         {toggle}
+        <HapticsToggle />
         <span className="hidden text-xs text-silver-500 md:inline">
           Keys: 1–3 pick a card · T truth · L lie
         </span>

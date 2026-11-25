@@ -32,17 +32,29 @@ export function Reveal({ round, result, isLast, onNext }: Props) {
       <div className="grid w-full gap-3 md:grid-cols-3">
         {round.statements.map((s, i) => {
           const isLie = i === result.lieIndex;
+          // The lie turns over first, then the truths.
+          const order = isLie ? 0 : 1 + result.truths.findIndex((t) => t.index === i);
+          const delay = `${order * 140}ms`;
           const truth = truthByIndex.get(i as 0 | 1 | 2);
           const picked = i === result.choice;
           return (
             <article
               key={i}
               aria-label={`Card ${i + 1}: ${isLie ? 'the fib' : 'true'}${picked ? ', your pick' : ''}`}
-              className={`flex flex-col gap-3 rounded-card border bg-surface p-5 shadow-card-edge ${isLie ? 'border-fib/70' : 'border-border'}`}
+              style={{ animationDelay: delay }}
+              className={`relative flex flex-col gap-3 overflow-hidden rounded-card border bg-surface p-5 shadow-card-edge motion-safe:animate-flip-in motion-reduce:animate-fade ${isLie ? 'border-fib/70' : 'border-border'}`}
             >
+              {!isLie && (
+                <span
+                  aria-hidden="true"
+                  style={{ animationDelay: `${order * 140 + 300}ms` }}
+                  className="pointer-events-none absolute inset-y-0 left-0 w-1/3 -translate-x-[120%] bg-linear-to-r from-transparent via-white/10 to-transparent motion-safe:animate-shimmer"
+                />
+              )}
               <div className="flex items-center justify-between">
                 <span
-                  className={`rounded-md border px-2 py-0.5 font-mono text-xs font-bold tracking-stamp ${isLie ? 'border-fib text-fib' : 'border-silver-300 text-metal'}`}
+                  style={isLie ? { animationDelay: '200ms' } : undefined}
+                  className={`rounded-md border px-2 py-0.5 font-mono text-xs font-bold tracking-stamp ${isLie ? 'border-fib text-fib motion-safe:animate-stamp' : 'border-silver-300 text-metal'}`}
                 >
                   {isLie ? 'FIB' : 'TRUE'}
                 </span>

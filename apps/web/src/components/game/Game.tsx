@@ -24,6 +24,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { RoundProgress } from '@/components/RoundProgress';
 import { fetchPuzzle, submitAnswer } from '@/lib/client/api';
+import { buzz } from '@/lib/client/haptics';
 import {
   isFirstVisit,
   loadGame,
@@ -81,7 +82,9 @@ export function Game({ initialPuzzle }: Props) {
         const result = await submitAnswer(state.date, roundIdx + 1, choice);
         const next = applyResult(state, roundIdx, result);
         update(next);
+        if (!result.correct) buzz('wrong');
         if (isFinished(next)) {
+          if (score(next) === ROUNDS_PER_PUZZLE) buzz('perfect');
           const s = recordCompletion(loadStats(), next.date, score(next));
           saveStats(s);
           setStats(s);
@@ -226,7 +229,7 @@ export function Game({ initialPuzzle }: Props) {
                 id="round-title"
                 ref={headingRef}
                 tabIndex={-1}
-                className="text-sm font-medium uppercase tracking-category text-silver-300 [font-variant-caps:all-small-caps]"
+                className="text-sm font-medium uppercase tracking-category text-silver-300 outline-none [font-variant-caps:all-small-caps]"
               >
                 <span aria-hidden="true">{CATEGORIES[n]?.emoji} </span>
                 Round {n + 1}: {round.category}
