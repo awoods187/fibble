@@ -134,3 +134,42 @@ A real run over May 2024 gave 275 candidates from 276 hooks (one had no bold sub
   pages and the exact hook format; the fixtures were then written to match it.
 - **Investigate a surprising "pass" as hard as a failure.** The unflagged organist was correct,
   but it was worth the two requests to know.
+
+---
+
+## Session 3 (2026-11-25): Dependabot, branch rules and a security pass
+
+**Model:** Claude Opus 5.5 in Claude Code.
+**Branches:** `ci/dependabot-and-checks`, `security/hardening`.
+
+### What happened
+
+1. **Dependabot and PR hygiene**, modelled on `andy-website`: grouped weekly updates,
+   CODEOWNERS and a PR template. Claude adapted rather than copied: a 3-day cooldown to
+   match pnpm's minimum release age, Next and React grouped, no `reviewers` key.
+2. **Security audit before stage 2.** Claude checked:
+   - every commit in both repos for key patterns (none found)
+   - the repo settings, collaborators, deploy keys, webhooks and Actions permissions
+   - the workflow triggers
+   - how the web app uses env vars and validates input
+
+   That produced a short list of real gaps.
+
+3. **Andy's decisions:** both kinds of agent files (AGENTS.md plus Claude Code deny rules,
+   and robots/ai/llms.txt), with AI training crawlers blocked.
+4. **Fixes:** a dependency-free secret scanner run on the repo and the built bundle, leak
+   tests, security headers, a body-size limit, SHA-pinned actions, and docs/security.md.
+
+### What went wrong
+
+The scanner's first version flagged an empty `SEARCH_API_KEY=` line. With the regex `m`
+flag, `\s*` after `=` ran on into the next line and matched the variable there. A test of
+allowed values caught it before it ever ran in CI.
+
+### Lessons
+
+- **Say what can't be done.** "Only we can use the API" isn't possible for a browser game.
+  The honest answer is a list of what is protected and what is still open, in
+  `docs/security.md`.
+- **Robots files are requests, not controls.** They're worth having, but rate limiting at
+  the edge is what enforces them.

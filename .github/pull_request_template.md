@@ -6,7 +6,7 @@
 
 - [ ] `pnpm format:check`, `lint`, `typecheck`, `test`, `validate:content`, `build` pass
 - [ ] New functions have tests (CLAUDE.md rule 4)
-- [ ] No secrets, and no real or future puzzles (only `content-example/`, marked `"sample": true`)
+- [ ] `pnpm check:secrets` passes; no secrets, and no real or future puzzles (only `content-example/`, marked `"sample": true`)
 - [ ] Answers still never reach the client before a choice; leak tests pass
 - [ ] Schema changes made in `packages/shared/src/schema.ts`, not in parallel types
 - [ ] New dependencies pinned in the `catalog:` and approved
