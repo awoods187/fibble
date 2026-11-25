@@ -44,6 +44,12 @@ export function isDateArchived(date: string, now: Date): boolean {
   return now.getTime() >= endEverywhere + DAY_MS;
 }
 
+/**
+ * Launch day: Fibble #1 (private launch, 2026-11-25). Puzzle numbers count from here and no
+ * day before it can be built. Change it only before anything is public: it renumbers every day.
+ */
+export const LAUNCH_DATE = '2026-11-25';
+
 /** Puzzle number: launch day is Fibble #1. Throws for dates before launch. */
 export function puzzleNumber(date: string, launchDate: string): number {
   const days = Math.round((utcMidnight(date) - utcMidnight(launchDate)) / DAY_MS);

@@ -4,6 +4,7 @@ import {
   isDateReleased,
   isValidDateString,
   puzzleNumber,
+  LAUNCH_DATE,
   utcDateString,
 } from './dates';
 
@@ -82,5 +83,12 @@ describe('puzzleNumber', () => {
 describe('utcDateString', () => {
   it('formats the UTC calendar date', () => {
     expect(utcDateString(new Date('2026-11-24T23:30:00-05:00'))).toBe('2026-11-25');
+  });
+});
+
+describe('LAUNCH_DATE', () => {
+  it('is a real date, and launch day is Fibble #1', () => {
+    expect(isValidDateString(LAUNCH_DATE)).toBe(true);
+    expect(puzzleNumber(LAUNCH_DATE, LAUNCH_DATE)).toBe(1);
   });
 });
