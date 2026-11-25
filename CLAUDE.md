@@ -26,6 +26,7 @@ pnpm validate:content    # checks content-example/ against the schema
 pnpm harvest --months 2024-05 --out out/candidates.jsonl   # stage 1, free Wikipedia APIs
 pnpm build
 pnpm format              # Prettier write; CI runs format:check
+pnpm check:secrets       # secret scan of committable files (CI also scans the built bundle)
 ```
 
 Scope to one package with `pnpm --filter @fibble/web test` (or `@fibble/shared`, `@fibble/pipeline`).
@@ -38,6 +39,7 @@ Scope to one package with `pnpm --filter @fibble/web test` (or `@fibble/shared`,
 | `packages/shared/`   | Zod schemas (`schema.ts`), categories, date gating, `toPublicPuzzle`, `buildAnswerResult`, `buildShareText`                                      |
 | `packages/pipeline/` | Typed stages (`src/stages/`), harvest (`src/harvest/`), record schemas (`src/schemas.ts`), `models.ts`, `prompts/example-v1/`, `evals/`          |
 | `tools/review/`      | Placeholder for the local review UI                                                                                                              |
+| `tools/security/`    | `check:secrets` scanner and repo guard tests (see `docs/security.md`)                                                                            |
 | `content-example/`   | Three sample days, `"sample": true`                                                                                                              |
 | `docs/`              | `architecture.md`, `adr/`, `ai-development.md` (and the local-only `PRD.md`)                                                                     |
 
@@ -74,3 +76,7 @@ Scope to one package with `pnpm --filter @fibble/web test` (or `@fibble/shared`,
 11. **Be polite to Wikipedia.** Every Wikipedia and Wikidata call goes through `WikiClient`
     (`packages/pipeline/src/harvest/wiki-client.ts`): descriptive User-Agent, one request at a
     time, `maxlag`, backoff and an on-disk cache. Tests use a fake `fetch`, never the network.
+12. **Security.** Read [docs/security.md](docs/security.md) before touching auth, env vars,
+    API routes or workflows. Never open `.env` files other than `.env.example`, never print
+    env values, and run `pnpm check:secrets` before committing. New workflow actions are
+    pinned to a full commit SHA. AGENTS.md repeats these rules for other coding agents.

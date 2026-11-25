@@ -82,16 +82,17 @@ pnpm install
 pnpm dev                # http://localhost:3000 shows a sample round
 ```
 
-| Command                 | What it does                                       |
-| ----------------------- | -------------------------------------------------- |
-| `pnpm dev`              | Run the web app in development mode                |
-| `pnpm build`            | Production build of every package                  |
-| `pnpm lint`             | ESLint across the monorepo                         |
-| `pnpm typecheck`        | TypeScript strict-mode checks                      |
-| `pnpm test`             | Vitest unit and API tests                          |
-| `pnpm validate:content` | Check `content-example/` against the puzzle schema |
-| `pnpm harvest`          | Pipeline stage 1: harvest DYK hooks (see below)    |
-| `pnpm format`           | Format with Prettier                               |
+| Command                 | What it does                                        |
+| ----------------------- | --------------------------------------------------- |
+| `pnpm dev`              | Run the web app in development mode                 |
+| `pnpm build`            | Production build of every package                   |
+| `pnpm lint`             | ESLint across the monorepo                          |
+| `pnpm typecheck`        | TypeScript strict-mode checks                       |
+| `pnpm test`             | Vitest unit and API tests                           |
+| `pnpm validate:content` | Check `content-example/` against the puzzle schema  |
+| `pnpm harvest`          | Pipeline stage 1: harvest DYK hooks (see below)     |
+| `pnpm check:secrets`    | Scan for leaked keys ([security](docs/security.md)) |
+| `pnpm format`           | Format with Prettier                                |
 
 The app reads the three sample days in [`content-example/`](content-example), so no
 database or API keys are needed to run it. Copy `.env.example` to `.env.local` only when
@@ -109,6 +110,7 @@ apps/web/              Next.js game and API routes (PWA later)
 packages/shared/       Puzzle types, Zod schemas and pure game logic
 packages/pipeline/     Content pipeline stages, prompts and evals
 tools/review/          Local review UI (placeholder)
+tools/security/        Secret scanner and repo guard tests
 content-example/       3 sample days
 docs/                  Architecture, ADRs, AI-development log
 ```
