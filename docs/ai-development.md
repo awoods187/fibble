@@ -486,3 +486,11 @@ and Arts rounds exist. That's exactly what the Unusual-articles batch is for.
   with lookalike tests ("Sussex", "Penistone").
 - **A test built only 1 day of 3.** The placeholder sample days cite one article everywhere,
   and the builder refused to reuse it: the rule working, not a bug.
+
+### Follow-up: launch date and basic dedupe
+
+Andy set the private launch for today: **2026-11-25 is Fibble #1**. `LAUNCH_DATE` now lives in
+`@fibble/shared`. `build-days` numbers from it, starts at today when the bank is empty, and
+refuses dates before launch. Stage 6 got a basic version: no reused article, and no statement
+that shares most of its words with one already in the bank or batch. A test also caught that a
+day abandoned partway lost its already-picked rounds; they're now reported as left over.

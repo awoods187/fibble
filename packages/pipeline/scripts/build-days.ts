@@ -8,13 +8,15 @@
  *   --approved  approved rounds from `pnpm review apply` (required)
  *   --bank      the bank folder of YYYY-MM-DD.json days (required)
  *   --count     at most this many days (default 7)
- *   --start     first date to fill (default: the day after the last bank day, or tomorrow)
+ *   --start     first date to fill (default: the day after the last bank day, or today; never
+ *               before the launch date: Fibble #1 is LAUNCH_DATE in @fibble/shared)
  *   --seed      lie-position shuffle seed (default: today's date)
  *   --log       review-log folder for the day-to-round mapping (default: none)
  *   --dry-run   print the plan; write nothing
  *
  * One round per category in the fixed order; never overwrites a day; never reuses a
- * Wikipedia article already in the bank; every day passes the publisher's checks.
+ * Wikipedia article or near-duplicates a statement already in the bank; every day passes
+ * the publisher's checks.
  */
 import { existsSync } from 'node:fs';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
@@ -66,24 +68,30 @@ const approved = (await readFile(resolve(base, args.approved), 'utf8'))
   .filter((l) => l.trim())
   .map((l) => ApprovedRoundSchema.parse(JSON.parse(l)));
 
-// What's already in the bank: its dates, and the articles its truths use.
+// What's already in the bank: its dates, the articles its truths use, and every statement.
 const existingDates: string[] = [];
 const usedArticles = new Set<string>();
+const bankTexts: string[] = [];
 for (const f of await readdir(bankDir)) {
   const m = /^(\d{4}-\d{2}-\d{2})\.json$/.exec(f);
   if (!m?.[1]) continue;
   existingDates.push(m[1]);
   const day = JSON.parse(await readFile(join(bankDir, f), 'utf8')) as {
-    rounds: { statements: { source?: { title: string } }[] }[];
+    rounds: { statements: { text: string; source?: { title: string } }[] }[];
   };
-  for (const r of day.rounds)
-    for (const s of r.statements) if (s.source) usedArticles.add(s.source.title);
+  for (const r of day.rounds) {
+    for (const s of r.statements) {
+      bankTexts.push(s.text);
+      if (s.source) usedArticles.add(s.source.title);
+    }
+  }
 }
 
 const result = buildDays({
   approved,
   existingDates,
   usedArticles,
+  bankTexts,
   start: args.start,
   count: args.count,
   seed: args.seed ?? now.toISOString().slice(0, 10),
