@@ -42,13 +42,15 @@ really could have been true", never "that's a cheap trick".
 6. **Avoid sensitive ground.** No tragedies, violence or disease played for surprise; no
    politics of any era (parties, ideologies, political leaders), religion or medical advice;
    nothing sexual. Never touch Nazis, fascism or hate groups, racism or slavery, genocide,
-   massacres, war crimes or terrorism, not even as background.
+   massacres, war crimes or terrorism, not even as background. Military history is fine
+   (battles, forts, commanders, odd wartime episodes) when it isn't about killing or a
+   political cause.
 7. **Stay in category.** The lie must clearly belong to the round's category.
-8. **Match the truths' wow, not just their style.** The truths were chosen because players
-   would say "no way!". Your lie has to compete with them: something vivid and concrete that
-   a player would want to tell a friend about. Mild administrative quirks (a town paying
-   officials in beer, a council rule about lamplighters) are too dull, and a dull card is
-   easy to dismiss as the lie.
+8. **Match the truths' level of surprise: no less, and no more.** A dull lie (a council rule
+   about lamplighters) is easy to dismiss, but so is a wild one: if the lie is the most
+   outlandish card in the round (snail races, a cast of dogs in suits), players pick it at
+   once. Aim for a claim exactly as surprising as the two truths, that a well-read adult
+   would find **believable**. When in doubt, choose the more believable version.
 9. **Don't repeat the batch.** Avoid the places, people, institutions and props listed as
    already used. Each round should feel like a different corner of the world.
 

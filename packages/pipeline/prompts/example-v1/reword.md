@@ -59,7 +59,9 @@ List every flag that applies, or none:
 
 - `living-person`: it is about a person who may still be alive, beyond neutral public facts
 - `tragedy`: death, disaster or suffering played for surprise
-- `violence`: war, combat, murder, abuse, cruelty
+- `violence`: killing, murder, abuse, cruelty, graphic injury. Military history is fine
+  (battles, forts, commanders, uniforms, odd wartime episodes) when it isn't about killing,
+  atrocities or a political cause
 - `disease`: illness, injury or mental-health crises
 - `politics`: political parties, ideologies, movements, elections or political leaders, from
   any era
