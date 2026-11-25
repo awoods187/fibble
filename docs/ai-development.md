@@ -340,3 +340,40 @@ v1 measured "fits the game" more than believability. Even so, two findings were 
 Page v2 asks two separate questions: **Believable?** (1–5, only "does it sound true") and
 **Good for the game?** (boring, fine, great). The report shows both. The lesson: one scale
 can't answer two questions, and a rater will answer the one they care about.
+
+---
+
+## Session 8 (2026-11-25): Choosing for fun, and a hard content filter
+
+**Model:** Claude Opus 5.5 in Claude Code.
+**Branch:** `feat/fun-selection`.
+
+Acting on Andy's ratings, Claude added:
+
+- fun ranking by comparison
+- a "match the wow" rule and an avoid list for lies
+- a plausibility floor of 2
+
+A fresh batch went through every stage and onto a rating page (ADR 0009).
+
+### A miss that mattered
+
+Andy found a card about a school's Nazi-themed parade. Every safeguard had depended on a model
+noticing, and none did:
+
+- Haiku's flags didn't name extremism.
+- Its politics flag covered only 30 years.
+- The fun ranker called it "fine".
+- The page had no "not OK" option.
+
+The fix is a code-level filter for extremism, atrocities and racism at every stage, plus
+broader model flags and a "Not OK" button. The test suite includes a statement shaped like
+the one that got through (ADR 0010).
+
+### Lessons
+
+- **Layer safeguards that fail in different ways.** Three model checks missed it for the same
+  underlying reason: none was asked about the topic. A keyword list is crude, but it fails
+  differently.
+- **Give reviewers a way to say "no".** A scale without "not appropriate" turns a content
+  problem into a quality score and hides it.
