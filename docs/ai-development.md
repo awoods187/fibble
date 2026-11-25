@@ -494,3 +494,16 @@ Andy set the private launch for today: **2026-11-25 is Fibble #1**. `LAUNCH_DATE
 refuses dates before launch. Stage 6 got a basic version: no reused article, and no statement
 that shares most of its words with one already in the bank or batch. A test also caught that a
 day abandoned partway lost its already-picked rounds; they're now reported as left over.
+
+### Follow-up: the game loop (G1)
+
+Read PRD section 3 and built the play loop. The rules (truth tray, skip, the last-card rule,
+lie-locks-round, scoring, streaks, local-midnight countdown) are pure functions in
+`@fibble/shared/game.ts` with unit tests; the web app only wires them to the screen, the API and
+localStorage, validating everything it reads back. Swipes and motion are left for G2.
+
+Checked by playing a full sample day in headless Chrome over the DevTools protocol (no new
+packages), at desktop, mobile and list-view sizes. That run caught three bugs the unit tests
+couldn't: React's development double-run made a first visit look like a return visit, the
+stacked cards behind the top card sat above it (a `relative` class beat `absolute`), and the
+test's own read during a reload. All three modes now finish a day with no page errors.

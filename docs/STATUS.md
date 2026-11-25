@@ -3,20 +3,20 @@
 The single place to see where Fibble is. **Update it in every PR that changes the picture.**
 Numbers only: real truths, lies and rounds stay in the private `fibble-content` repo.
 
-_Last updated: 2026-11-25 (launch date and dedupe PR)._
+_Last updated: 2026-11-25 (game loop G1 PR)._
 
 ## Where we are
 
 **Phase:** private launch, **2026-11-25 = Fibble #1**. The pipeline runs from Wikipedia to bank
 days (stages 1–5, review, day assembly).
-Hosting is built but waiting on Vercel. Next: the first real days (a paid batch plus Andy's
-review), then the playable game.
+The game plays a full day (G1: tap, keys and list view). Hosting is built but waiting on Vercel.
+Next: swipes and motion (G2), the PWA (G3), and the first real days (a paid batch plus Andy's review).
 
 | Area               | State                                                                                                                                                                                         |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Repos              | `fibble` (public, `main` protected, CI required) · `fibble-content` (private, honor-system merges on GitHub Free)                                                                             |
 | Security           | Keyless Claude auth; secret scanning (GitHub on public, `check:secrets` + pre-commit hook on private); SHA-pinned actions; security headers; banned-topic filter ([security.md](security.md)) |
-| Web app            | Date-gated puzzle API, answer endpoint, leak tests. The page only **shows** round 1; there's no play loop yet                                                                                 |
+| Web app            | Plays a full day: splash and how-to, 5 rounds (tap, keys 1–3/T/L, list view), reveal, results, share, local streaks, resume. No swipes yet (G2)                                               |
 | Content in `bank/` | **None yet.** No day has been assembled or reviewed                                                                                                                                           |
 | Hosting            | Neon ready (roles checked); app reads it when `DATABASE_URL` is set (ADR 0012). **Vercel blocked:** the account email needs Vercel support                                                    |
 
@@ -62,8 +62,8 @@ review), then the playable game.
 1. **Content** _(code done)_: a paid batch of about 35 rounds (7 per category, capped at $15),
    Andy reviews them, then `build-days` writes about 7 days to `bank/`.
 2. **Hosting** _(built)_: finish the Vercel setup once support replies, then the smoke test.
-3. **Game:** play all 5 rounds (tap and keys, then swipe), reveal, results, share, local
-   streaks.
+3. **Game:** G1 done (full day by tap, keys and list view; reveal; results; share; streaks;
+   resume). G2: swipes, motion, haptics. G3: PWA and About page.
 
 ## Waiting on Andy
 

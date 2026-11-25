@@ -1,19 +1,22 @@
 interface RoundProgressProps {
+  /** Rounds finished so far. */
   current: number;
   total: number;
+  /** What a screen reader hears, e.g. "Round 2 of 5". */
+  label?: string;
 }
 
 /** Five small segments at the top, filled silver as rounds finish. */
-export function RoundProgress({ current, total }: RoundProgressProps) {
+export function RoundProgress({ current, total, label }: RoundProgressProps) {
   return (
     <div
       className="flex gap-1.5"
       role="progressbar"
-      aria-label="Round"
-      aria-valuemin={1}
+      aria-label="Progress"
+      aria-valuemin={0}
       aria-valuemax={total}
       aria-valuenow={current}
-      aria-valuetext={`Round ${current} of ${total}`}
+      aria-valuetext={label ?? `${current} of ${total} rounds done`}
     >
       {Array.from({ length: total }, (_, i) => (
         <span

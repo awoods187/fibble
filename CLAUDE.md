@@ -9,8 +9,8 @@ the fib. Truths are reworded from Wikipedia; lies are written by an LLM, verifie
 model, and approved by a human. The product requirements live in `docs/PRD.md`, which is
 **git-ignored and local only**. Ask Andy for a copy if it's missing; never commit it.
 
-Status: pre-alpha. Week 1 foundations and pipeline stages 1 to 5 (harvest, reword, generate lies, verify, assemble) are built. Swipe play,
-reveals, the database, the PWA shell and stages 6 and 7 are not.
+Status: pre-alpha. See `docs/STATUS.md`. The pipeline (stages 1 to 7) and the database are built; the game
+plays a full day by tap, keys and list view. Swipes and motion (G2) and the PWA shell (G3) are not.
 
 ## Commands
 
