@@ -393,3 +393,34 @@ Andy also allowed military history that isn't about killing, atrocities or polit
 
 **Lesson:** a measurement taken with a flawed instrument can point the wrong way. Recheck an
 earlier conclusion once the instrument is fixed.
+
+---
+
+## Session 9 (2026-11-25): Stage 5 (assemble rounds)
+
+**Model:** Claude Opus 5.5 in Claude Code.
+**Branch:** `feat/pipeline-assemble`.
+
+Claude built stage 5 per the PRD:
+
+- a Haiku style spotter, run 10 times per lie with a reshuffled order each time
+- heuristic flags
+- balanced lie positions
+- predicted difficulty
+- rounds written in the shared `Round` schema
+
+A $0.02 run on the previous batch then checked the spotter against Andy's ratings. It
+disagreed: it picked lies Andy had rated 2 for believability, and ranked the one he rated 4
+near the bottom. Plausibility had matched him closely, so it now leads the ranking and the
+spotter becomes a veto (ADR 0011).
+
+### What went wrong
+
+Earlier README edits had been made with a find-and-replace that silently did nothing when the
+text didn't match, so the command table was missing `verify`, `generate-lies` and `rating`.
+Every scripted doc edit now asserts that its match was found.
+
+### Lesson
+
+**Before a metric selects anything, check it against human judgement.** This took one cheap
+run against ratings that already existed.

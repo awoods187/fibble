@@ -82,18 +82,23 @@ pnpm install
 pnpm dev                # http://localhost:3000 shows a sample round
 ```
 
-| Command                 | What it does                                        |
-| ----------------------- | --------------------------------------------------- |
-| `pnpm dev`              | Run the web app in development mode                 |
-| `pnpm build`            | Production build of every package                   |
-| `pnpm lint`             | ESLint across the monorepo                          |
-| `pnpm typecheck`        | TypeScript strict-mode checks                       |
-| `pnpm test`             | Vitest unit and API tests                           |
-| `pnpm validate:content` | Check `content-example/` against the puzzle schema  |
-| `pnpm harvest`          | Pipeline stage 1: harvest DYK hooks (see below)     |
-| `pnpm reword`           | Pipeline stage 2: reword and fact-check (**paid**)  |
-| `pnpm check:secrets`    | Scan for leaked keys ([security](docs/security.md)) |
-| `pnpm format`           | Format with Prettier                                |
+| Command                 | What it does                                                 |
+| ----------------------- | ------------------------------------------------------------ |
+| `pnpm dev`              | Run the web app in development mode                          |
+| `pnpm build`            | Production build of every package                            |
+| `pnpm lint`             | ESLint across the monorepo                                   |
+| `pnpm typecheck`        | TypeScript strict-mode checks                                |
+| `pnpm test`             | Vitest unit and API tests                                    |
+| `pnpm validate:content` | Check `content-example/` against the puzzle schema           |
+| `pnpm harvest`          | Pipeline stage 1: harvest DYK hooks (see below)              |
+| `pnpm reword`           | Pipeline stage 2: reword and fact-check (**paid**)           |
+| `pnpm rank-truths`      | Sort truths great / fine / boring (**paid**)                 |
+| `pnpm generate-lies`    | Stage 3: write lies; `--verify` runs stage 4 (**paid**)      |
+| `pnpm verify`           | Stage 4: check lies are false; golden-set eval (**paid**)    |
+| `pnpm assemble`         | Stage 5: build rounds with the style-spotter test (**paid**) |
+| `pnpm rating`           | Offline human rating page, and a human-vs-model report       |
+| `pnpm check:secrets`    | Scan for leaked keys ([security](docs/security.md))          |
+| `pnpm format`           | Format with Prettier                                         |
 
 The app reads the three sample days in [`content-example/`](content-example), so no
 database or API keys are needed to run it. Copy `.env.example` to `.env.local` only when
