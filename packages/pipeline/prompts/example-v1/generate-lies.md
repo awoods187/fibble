@@ -39,8 +39,10 @@ really could have been true", never "that's a cheap trick".
    organization**, living or dead.
 5. **Different topic.** Your lie must not be about the same subject, place, person or event as
    either truth in the round.
-6. **Avoid sensitive ground.** No tragedies, violence or disease played for surprise; no current
-   politics, religion or medical advice; nothing sexual.
+6. **Avoid sensitive ground.** No tragedies, violence or disease played for surprise; no
+   politics of any era (parties, ideologies, political leaders), religion or medical advice;
+   nothing sexual. Never touch Nazis, fascism or hate groups, racism or slavery, genocide,
+   massacres, war crimes or terrorism, not even as background.
 7. **Stay in category.** The lie must clearly belong to the round's category.
 8. **Match the truths' wow, not just their style.** The truths were chosen because players
    would say "no way!". Your lie has to compete with them: something vivid and concrete that

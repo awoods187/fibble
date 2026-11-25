@@ -59,14 +59,20 @@ List every flag that applies, or none:
 
 - `living-person`: it is about a person who may still be alive, beyond neutral public facts
 - `tragedy`: death, disaster or suffering played for surprise
-- `violence`: war crimes, murder, abuse, cruelty
+- `violence`: war, combat, murder, abuse, cruelty
 - `disease`: illness, injury or mental-health crises
-- `politics`: politics or elections from the last 30 years
+- `politics`: political parties, ideologies, movements, elections or political leaders, from
+  any era
 - `religion`: claims about faith or religious practice that could offend
 - `medical`: anything that reads as health advice
 - `sexual`: sexual content
 - `stale`: a superlative or "current" fact that may stop being true
 - `wrongdoing`: attributes a crime, scandal or misconduct to a named person or company
+- `extremism`: Nazis, fascism, hate groups or their symbols, even in a light-hearted story
+- `racism`: racism, slavery, segregation, or ethnic or religious discrimination
+- `atrocity`: genocide, massacres, war crimes, terrorism
+
+When in doubt, flag it. Fibble is a light daily game; nothing in it should make a player wince.
 
 # User
 

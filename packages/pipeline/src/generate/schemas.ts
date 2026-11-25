@@ -23,6 +23,7 @@ export const LIE_REJECTION_REASONS = [
   'copied-truth',
   'needs-number',
   'duplicate',
+  'sensitive-topic',
 ] as const;
 export type LieRejectionReason = (typeof LIE_REJECTION_REASONS)[number];
 

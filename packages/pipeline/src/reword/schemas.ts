@@ -26,6 +26,9 @@ export const CONTENT_FLAGS = [
   'sexual',
   'stale',
   'wrongdoing',
+  'extremism',
+  'racism',
+  'atrocity',
 ] as const;
 
 /** What the draft model returns (prompts/example-v1/reword.md). */
@@ -101,6 +104,7 @@ export const REJECTION_REASONS = [
   'no-supporting-sentence',
   'copied-source',
   'not-entailed',
+  'sensitive-topic',
 ] as const;
 export type RejectionReason = (typeof REJECTION_REASONS)[number];
 

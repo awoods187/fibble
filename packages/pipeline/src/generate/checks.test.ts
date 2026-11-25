@@ -79,6 +79,15 @@ describe('checkLie', () => {
     ).toContain('copied-truth');
   });
 
+  it('rejects a lie or lie note on a banned topic', () => {
+    expect(reasons({ text: GOOD.text.replace('passengers', 'fascist passengers') })).toContain(
+      'sensitive-topic',
+    );
+    expect(reasons({ lieNote: 'Plausible because slavery shaped the port; invented.' })).toContain(
+      'sensitive-topic',
+    );
+  });
+
   it('requires a number when both truths have one', () => {
     expect(
       reasons({

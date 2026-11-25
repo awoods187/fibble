@@ -28,6 +28,8 @@ Rules:
   strict is the point: the game should run on the best of the batch.
 - Judge the fact, not the wording. Wording can be fixed; a dull fact can't.
 - Ignore whether you think a statement is true; they all are.
+- Anything touching extremism, racism, genocide, war or politics is `boring`, however
+  surprising: it doesn't belong in a light daily game.
 - Give every statement exactly one entry, with its number, a tier, and a short reason (under 20
   words).
 
