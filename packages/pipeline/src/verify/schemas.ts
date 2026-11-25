@@ -38,6 +38,12 @@ export const EvidenceSchema = z.strictObject({
 });
 export type Evidence = z.infer<typeof EvidenceSchema>;
 
+/**
+ * Plausibility floor: the PRD's 3+. Briefly lowered to 2 after the first human ratings
+ * seemed to show the model 1.7 points too harsh, but that page mixed believability with
+ * "good for the game". On the two-question page the model matched the human to within
+ * 0.1 points, and a floor of 3 rejects exactly the lies the human doubted (ADR 0009).
+ */
 export const MIN_PLAUSIBILITY = 3;
 
 /** A verdict on one lie, with every piece of evidence it was based on (ADR 0005). */
@@ -47,12 +53,12 @@ export const VerifiedLieSchema = z.strictObject({
   evidence: z.array(EvidenceSchema),
   /** Absent when the lie couldn't be judged; see `error`. */
   label: z.enum(VERIFICATION_LABELS).optional(),
-  /** Rated from the statement alone, before any evidence (PRD: 3+ to pass). */
+  /** Rated from the statement alone, before any evidence (2+ to pass; see MIN_PLAUSIBILITY). */
   plausibility: z.int().min(1).max(5).optional(),
   plausibilityReason: z.string().optional(),
   judgeRationale: z.string(),
   citedEvidence: z.array(z.int()),
-  /** True only for contradicted or no-evidence with plausibility >= 3, judged on real evidence. */
+  /** True only for contradicted or no-evidence with plausibility >= MIN_PLAUSIBILITY, judged on real evidence. */
   passed: z.boolean(),
   /** Why the lie couldn't be judged (no evidence retrieved, a refusal...). Never passes. */
   error: z.string().optional(),

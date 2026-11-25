@@ -14,6 +14,14 @@ import {
 } from './schemas';
 
 export const GENERATE_MAX_TOKENS = 16_000;
+/** How many earlier lies to list as "already used", so rounds don't repeat settings. */
+export const AVOID_RECENT = 20;
+
+/** The "already used" block for the prompt: lies accepted earlier in this run. */
+export function avoidList(used: string[]): string {
+  const recent = used.slice(-AVOID_RECENT);
+  return recent.length ? recent.map((t) => `- ${t}`).join('\n') : '(nothing yet)';
+}
 /** PRD: 5 candidate lies per round. */
 export const DEFAULT_LIE_COUNT = 5;
 
@@ -60,6 +68,7 @@ export async function generateForPairs(
 ): Promise<{ records: GenerationRecord[]; notStarted: number }> {
   const count = opts.count ?? DEFAULT_LIE_COUNT;
   const records: GenerationRecord[] = [];
+  const used: string[] = [];
   const trace: Trace = {
     stage: 'generateLies',
     promptVersion: opts.prompt.version,
@@ -81,6 +90,7 @@ export async function generateForPairs(
         truth_1: pair[0].text,
         truth_2: pair[1].text,
         count: String(count),
+        avoid: avoidList(used),
       }),
       schema: GeneratedLiesSchema,
       maxTokens: GENERATE_MAX_TOKENS,
@@ -131,6 +141,7 @@ export async function generateForPairs(
         trace,
       });
     });
+    used.push(...accepted.map((l) => l.text));
     records.push(
       GenerationRecordSchema.parse({ ...base, returned: lies.length, accepted, rejected }),
     );

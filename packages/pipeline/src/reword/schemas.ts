@@ -26,6 +26,9 @@ export const CONTENT_FLAGS = [
   'sexual',
   'stale',
   'wrongdoing',
+  'extremism',
+  'racism',
+  'atrocity',
 ] as const;
 
 /** What the draft model returns (prompts/example-v1/reword.md). */
@@ -77,6 +80,14 @@ export const RewordedTruthSchema = z.strictObject({
   }),
   /** Every Claude call this truth cost, with its estimated price. */
   usage: z.array(CallUsageSchema),
+  /** Set by the fun-ranking step (src/rank), which compares truths in batches. */
+  fun: z
+    .strictObject({
+      tier: z.enum(['great', 'fine', 'boring']),
+      reason: z.string(),
+      promptVersion: z.string(),
+    })
+    .optional(),
   trace: TraceSchema,
 });
 
@@ -93,6 +104,7 @@ export const REJECTION_REASONS = [
   'no-supporting-sentence',
   'copied-source',
   'not-entailed',
+  'sensitive-topic',
 ] as const;
 export type RejectionReason = (typeof REJECTION_REASONS)[number];
 

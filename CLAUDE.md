@@ -68,7 +68,11 @@ Scope to one package with `pnpm --filter @fibble/web test` (or `@fibble/shared`,
    and missing dates return the same 404.
 7. **Content rules (PRD section 5):** no living people in lies; never attribute wrongdoing to a
    named real person or company; truths must cite a Wikipedia article and pinned revision ID;
-   statements are 80 to 160 characters.
+   statements are 80 to 160 characters. **Never** extremism (Nazis, fascism, hate groups),
+   racism or slavery, genocide or atrocities, or politics of any era. Military history is fine
+   when it isn't about killing, atrocities or a political cause. `src/content/sensitive.ts`
+   enforces the banned topics in code, at every stage and before human review (ADR 0010);
+   when a review finds a miss, add the term there.
 8. **Models:** use the IDs in `packages/pipeline/src/models.ts`; don't hard-code model IDs elsewhere.
 9. **Dependencies:** pin new versions in the `catalog:` in `pnpm-workspace.yaml`, and check the
    current version with `npm view <pkg> version` instead of guessing. Ask before adding one.

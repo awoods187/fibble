@@ -3,6 +3,7 @@ import { type Budget, type CallUsage, type Effort, type LlmClient } from '../llm
 import { MODELS } from '../models';
 import { type Prompt, render } from '../prompts';
 import type { Candidate, RewordedTruth, StageContext, Trace } from '../types';
+import { describeSensitive, findSensitive } from '../content/sensitive';
 import { checkDraft } from './checks';
 import {
   EntailmentSchema,
@@ -105,6 +106,12 @@ export async function rewordCandidates(
       reject(c, 'filter', ['living-person'], [`Living: ${c.livingPeople.join(', ')}`], []);
       continue;
     }
+    // Free filter: never spend money on a hook that touches a banned topic.
+    const hookSensitive = findSensitive(c.rawClaim);
+    if (hookSensitive.length) {
+      reject(c, 'filter', ['sensitive-topic'], [describeSensitive(hookSensitive)], []);
+      continue;
+    }
     if (opts.budget.exhausted) {
       stats.notStarted = candidates.length - i;
       break;
@@ -132,6 +139,10 @@ export async function rewordCandidates(
     const draft = draftCall.output;
 
     const failures = checkDraft(draft, c.contextText, c.rawClaim);
+    const draftSensitive = findSensitive(draft.text, draft.expansion);
+    if (draftSensitive.length) {
+      failures.push({ reason: 'sensitive-topic', detail: describeSensitive(draftSensitive) });
+    }
     if (failures.length) {
       reject(
         c,

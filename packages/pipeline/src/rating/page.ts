@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
+import { describeSensitive, findSensitive } from '../content/sensitive';
 import type { LieCandidate } from '../generate/schemas';
 import type { RewordedTruth } from '../types';
 
@@ -45,6 +46,24 @@ export function seededShuffle<T>(items: T[], seed: string): T[] {
   return out;
 }
 
+/** Drop anything that trips the hard content filter: it never reaches a human rater. */
+export function filterForRating(
+  truths: RewordedTruth[],
+  lies: LieCandidate[],
+): { truths: RewordedTruth[]; lies: LieCandidate[]; skipped: string[] } {
+  const skipped: string[] = [];
+  const clean = (texts: string[], label: string) => {
+    const hits = findSensitive(...texts);
+    if (hits.length) skipped.push(`${label}: ${describeSensitive(hits)}`);
+    return !hits.length;
+  };
+  return {
+    truths: truths.filter((t) => clean([t.text, t.expansion], `truth ${t.candidateId}`)),
+    lies: lies.filter((l) => clean([l.text, l.lieNote], `lie ${l.id}`)),
+    skipped,
+  };
+}
+
 export function buildRatingSet(
   truths: RewordedTruth[],
   lies: LieCandidate[],
@@ -75,7 +94,7 @@ export function buildRatingSet(
   return { setId, items, key };
 }
 
-export const FUN_LEVELS = ['boring', 'fine', 'great'] as const;
+export const FUN_LEVELS = ['boring', 'fine', 'great', 'not-ok'] as const;
 export type FunLevel = (typeof FUN_LEVELS)[number];
 
 /** The file the page downloads. Version 1 files (believability only) have no `fun`. */
@@ -87,7 +106,7 @@ export const RatingsFileSchema = z.object({
       id: z.string(),
       /** Believability: could a player believe it's true? */
       plausibility: z.int().min(1).max(5),
-      /** Would it make a good card in the game, whatever its truth? */
+      /** Would it make a good card in the game, whatever its truth? "not-ok" = shouldn't be in it. */
       fun: z.enum(FUN_LEVELS).optional(),
       /** The rater already knew whether it was true, so the score isn't a blind judgment. */
       knew: z.boolean(),
@@ -122,6 +141,7 @@ export const FUN_SCALE = [
   ['boring', 'Boring', 'B', 'A shrug, true or not'],
   ['fine', 'Fine', 'F', 'Would do as a card'],
   ['great', 'Great', 'G', '"No way!" Players would share it'],
+  ['not-ok', 'Not OK', 'N', "Shouldn't be in the game"],
 ] as const;
 
 export function buildRatingPage(set: RatingSet): string {
@@ -159,12 +179,14 @@ export function buildRatingPage(set: RatingSet): string {
   legend strong { color:var(--s100); }
   .seg { display:grid; gap:6px; }
   .seg.five { grid-template-columns:repeat(5,1fr); }
-  .seg.three { grid-template-columns:repeat(3,1fr); }
+  .seg.four { grid-template-columns:repeat(4,1fr); }
   .opt { padding:10px 6px; background:var(--raised); color:var(--s100); border:1px solid var(--border); border-radius:12px; font:inherit; font-size:13px; line-height:1.25; cursor:pointer; text-align:center; }
   .opt b { display:block; font-size:18px; font-variant-numeric:tabular-nums; margin-bottom:2px; }
   .opt small { display:block; color:var(--s500); font-size:11px; margin-top:2px; }
   .opt:hover, .opt:focus-visible { border-color:var(--s500); outline:none; }
   .opt[aria-pressed="true"] { border-color:var(--s100); background:#2a2a2f; }
+  .opt.notok { border-color:#5a2a2c; }
+  .opt.notok[aria-pressed="true"] { border-color:#e5484d; background:#3a1a1c; }
   .row { display:flex; justify-content:space-between; align-items:center; margin-top:16px; gap:12px; flex-wrap:wrap; }
   label.knew { color:var(--s300); font-size:14px; display:flex; gap:8px; align-items:center; cursor:pointer; }
   .nav button, .done button { background:transparent; color:var(--s300); border:1px solid var(--border); border-radius:10px; padding:8px 14px; font:inherit; font-size:14px; cursor:pointer; }
@@ -179,9 +201,9 @@ export function buildRatingPage(set: RatingSet): string {
 <main>
   <header><h1>Fibble · rate statements</h1><span class="progress" id="progress"></span></header>
   <div class="bar"><div id="bar"></div></div>
-  <p class="intro">Some of these are true and some are invented. Answer two separate questions for each, without looking anything up. <strong>Believable?</strong> is only about whether it sounds true. <strong>Good for the game?</strong> is whether it would make a fun card, true or not.</p>
+  <p class="intro">Some of these are true and some are invented. Answer two separate questions for each, without looking anything up. <strong>Believable?</strong> is only about whether it sounds true. <strong>Good for the game?</strong> is whether it would make a fun card, true or not. Use <strong>Not OK</strong> for anything that shouldn't be in the game at all: politics, extremism, racism, atrocities, anything hurtful.</p>
   <section id="view"></section>
-  <p class="hint"><kbd>1</kbd>–<kbd>5</kbd> believable · <kbd>B</kbd> <kbd>F</kbd> <kbd>G</kbd> boring / fine / great · <kbd>K</kbd> I already knew · <kbd>←</kbd> <kbd>→</kbd> move · progress saves in this browser</p>
+  <p class="hint"><kbd>1</kbd>–<kbd>5</kbd> believable · <kbd>B</kbd> <kbd>F</kbd> <kbd>G</kbd> <kbd>N</kbd> boring / fine / great / not OK · <kbd>K</kbd> I already knew · <kbd>←</kbd> <kbd>→</kbd> move · progress saves in this browser</p>
 </main>
 <script id="data" type="application/json">${data}</script>
 <script>
@@ -213,7 +235,11 @@ export function buildRatingPage(set: RatingSet): string {
   function cardView(item) {
     const r = ratings[item.id] || {};
     const believeOpts = believe.map(([n, title]) => choice([el('b', {}, String(n)), title], n, r.plausibility, (v) => set('plausibility', v)));
-    const funOpts = fun.map(([value, title, keyName, desc]) => choice([el('b', {}, title), el('small', {}, desc)], value, r.fun, (v) => set('fun', v)));
+    const funOpts = fun.map(([value, title, keyName, desc]) => {
+      const b = choice([el('b', {}, title), el('small', {}, desc)], value, r.fun, (v) => set('fun', v));
+      if (value === 'not-ok') b.classList.add('notok');
+      return b;
+    });
     const knew = el('input', { type: 'checkbox', checked: Boolean(r.knew) });
     knew.addEventListener('change', () => { ratings[item.id] = { ...(ratings[item.id] || {}), knew: knew.checked }; save(); });
     const prev = el('button', { type: 'button', disabled: i === 0 }, '← Back');
@@ -224,7 +250,7 @@ export function buildRatingPage(set: RatingSet): string {
     return el('div', {},
       el('article', { className: 'card' }, el('div', { className: 'cat' }, item.category), el('div', { className: 'text' }, item.text)),
       el('fieldset', {}, legend('Believable?', 'Does it sound true?'), el('div', { className: 'seg five' }, ...believeOpts)),
-      el('fieldset', {}, legend('Good for the game?', 'True or not, would it make a fun card?'), el('div', { className: 'seg three' }, ...funOpts)),
+      el('fieldset', {}, legend('Good for the game?', 'True or not, would it make a fun card?'), el('div', { className: 'seg four' }, ...funOpts)),
       el('div', { className: 'row' }, el('label', { className: 'knew' }, knew, 'I already knew whether this is true'), el('div', { className: 'nav' }, prev, ' ', next)));
   }
 

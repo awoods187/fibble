@@ -2,7 +2,7 @@
 stage: generate-lies
 version: example-v1
 model: claude-opus-5-5
-inputs: [category, truth_1, truth_2, count]
+inputs: [category, truth_1, truth_2, count, avoid]
 output: GeneratedLies (src/generate/schemas.ts), enforced with structured outputs
 ---
 
@@ -39,9 +39,20 @@ really could have been true", never "that's a cheap trick".
    organization**, living or dead.
 5. **Different topic.** Your lie must not be about the same subject, place, person or event as
    either truth in the round.
-6. **Avoid sensitive ground.** No tragedies, violence or disease played for surprise; no current
-   politics, religion or medical advice; nothing sexual.
+6. **Avoid sensitive ground.** No tragedies, violence or disease played for surprise; no
+   politics of any era (parties, ideologies, political leaders), religion or medical advice;
+   nothing sexual. Never touch Nazis, fascism or hate groups, racism or slavery, genocide,
+   massacres, war crimes or terrorism, not even as background. Military history is fine
+   (battles, forts, commanders, odd wartime episodes) when it isn't about killing or a
+   political cause.
 7. **Stay in category.** The lie must clearly belong to the round's category.
+8. **Match the truths' level of surprise: no less, and no more.** A dull lie (a council rule
+   about lamplighters) is easy to dismiss, but so is a wild one: if the lie is the most
+   outlandish card in the round (snail races, a cast of dogs in suits), players pick it at
+   once. Aim for a claim exactly as surprising as the two truths, that a well-read adult
+   would find **believable**. When in doubt, choose the more believable version.
+9. **Don't repeat the batch.** Avoid the places, people, institutions and props listed as
+   already used. Each round should feel like a different corner of the world.
 
 ## The "why it sounded true" note
 
@@ -68,5 +79,8 @@ Category: {{category}}
 
 Truth 1: {{truth_1}}
 Truth 2: {{truth_2}}
+
+Already used in other rounds of this batch (don't reuse their places, people or props):
+{{avoid}}
 
 Write {{count}} candidate lies for this round.

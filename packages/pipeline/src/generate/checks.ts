@@ -1,4 +1,5 @@
 import { EXPANSION_MAX_LENGTH, STATEMENT_MAX_LENGTH, STATEMENT_MIN_LENGTH } from '@fibble/shared';
+import { describeSensitive, findSensitive } from '../content/sensitive';
 import { HEDGING_PATTERN, longestSharedRun, words } from '../reword/checks';
 import type { RewordedTruth } from '../types';
 import type { GeneratedLie, LieRejectionReason } from './schemas';
@@ -94,6 +95,9 @@ export function checkLie(
       });
     }
   }
+  const sensitive = findSensitive(text, note);
+  if (sensitive.length)
+    failures.push({ reason: 'sensitive-topic', detail: describeSensitive(sensitive) });
   if (hasDigit(truths[0].text) && hasDigit(truths[1].text) && !hasDigit(text)) {
     failures.push({
       reason: 'needs-number',

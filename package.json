@@ -22,7 +22,8 @@
     "reword": "pnpm --filter @fibble/pipeline reword",
     "verify": "pnpm --filter @fibble/pipeline verify",
     "generate-lies": "pnpm --filter @fibble/pipeline generate-lies",
-    "rating": "pnpm --filter @fibble/pipeline rating"
+    "rating": "pnpm --filter @fibble/pipeline rating",
+    "rank-truths": "pnpm --filter @fibble/pipeline rank-truths"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",

@@ -197,9 +197,9 @@ describe('verifyLies', () => {
 
   it('fails a no-evidence lie below the plausibility floor', async () => {
     const { verified, stats } = await run(
-      fakes([plausible(2), queriesReply(['q']), judgeReply('no-evidence', [])]),
+      fakes([plausible(1), queriesReply(['q']), judgeReply('no-evidence', [])]),
     );
-    expect(verified[0]).toMatchObject({ passed: false, label: 'no-evidence', plausibility: 2 });
+    expect(verified[0]).toMatchObject({ passed: false, label: 'no-evidence', plausibility: 1 });
     expect(stats.lowPlausibility).toBe(1);
   });
 
@@ -293,10 +293,11 @@ describe('helpers', () => {
     expect(formatEvidence([])).toBe('(no results)');
   });
 
-  it('passes only unsupported lies with plausibility 3+', () => {
+  it('passes only unsupported lies at or above the plausibility floor (3)', () => {
     expect(passes('contradicted', 3)).toBe(true);
     expect(passes('no-evidence', 5)).toBe(true);
     expect(passes('no-evidence', 2)).toBe(false);
+    expect(passes('no-evidence', 1)).toBe(false);
     expect(passes('supported', 5)).toBe(false);
   });
 });

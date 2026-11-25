@@ -21,6 +21,8 @@ export * from './generate/checks';
 export * from './generate/run';
 export * from './rating/page';
 export * from './rating/report';
+export * from './rank/run';
+export * from './content/sensitive';
 export { harvest } from './stages/harvest';
 export { reword } from './stages/reword';
 export { generateLies } from './stages/generate-lies';

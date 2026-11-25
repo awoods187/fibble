@@ -10,7 +10,15 @@ import {
 import { parsePrompt } from '../prompts';
 import type { RewordedTruth, StageContext } from '../types';
 import type { VerifiedLie } from '../verify/schemas';
-import { gate2Report, generateForPairs, lieId, pairTruths, type TruthPair } from './run';
+import {
+  AVOID_RECENT,
+  avoidList,
+  gate2Report,
+  generateForPairs,
+  lieId,
+  pairTruths,
+  type TruthPair,
+} from './run';
 import { GenerationRecordSchema, type GeneratedLie } from './schemas';
 
 const CTX: StageContext = {
@@ -21,7 +29,7 @@ const CTX: StageContext = {
 const PROMPT = parsePrompt(
   'generate-lies',
   'test-v1',
-  '# System\nWrite {{count}}.\n# User\n{{category}}|{{truth_1}}|{{truth_2}}|{{count}}',
+  '# System\nWrite {{count}}.\n# User\n{{category}}|{{truth_1}}|{{truth_2}}|{{count}}\n{{avoid}}',
 );
 const usage = (model: CallUsage['model'], usd: number): CallUsage => ({
   model,
@@ -152,7 +160,7 @@ describe('generateForPairs', () => {
       effort: 'high',
       system: 'Write 5.',
     });
-    expect(requests[0]?.user).toBe(`History|${T1.text}|${T2.text}|5`);
+    expect(requests[0]?.user).toBe(`History|${T1.text}|${T2.text}|5\n(nothing yet)`);
   });
 
   it('records a failed generator call without lies', async () => {
@@ -239,5 +247,28 @@ describe('gate2Report', () => {
     // Round 1: generation 0.05 + two verifications 0.04 + two truths 0.02. Round 2: 0.05 + 0.02.
     expect(report.roundsDetail[0]?.costUsd).toBeCloseTo(0.11, 10);
     expect(report.costPerRoundUsd).toBeCloseTo((0.11 + 0.07) / 2, 10);
+  });
+});
+
+describe('avoid list', () => {
+  it('lists lies accepted in earlier rounds of the run in the next prompt', async () => {
+    const { llm, requests } = fakeLlm([ok([LIE_A]), ok([LIE_B])]);
+    await generateForPairs(
+      [
+        [T1, T2],
+        [T2, T3],
+      ],
+      CTX,
+      { llm, prompt: PROMPT, budget: new Budget(5) },
+    );
+    expect(requests[0]?.user.endsWith('(nothing yet)')).toBe(true);
+    expect(requests[1]?.user.endsWith(`- ${LIE_A.text}`)).toBe(true);
+  });
+
+  it('keeps only the most recent lies', () => {
+    const many = Array.from({ length: AVOID_RECENT + 5 }, (_, i) => `lie ${i}`);
+    const list = avoidList(many).split('\n');
+    expect(list).toHaveLength(AVOID_RECENT);
+    expect(list[0]).toBe('- lie 5');
   });
 });

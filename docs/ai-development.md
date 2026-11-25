@@ -340,3 +340,56 @@ v1 measured "fits the game" more than believability. Even so, two findings were 
 Page v2 asks two separate questions: **Believable?** (1–5, only "does it sound true") and
 **Good for the game?** (boring, fine, great). The report shows both. The lesson: one scale
 can't answer two questions, and a rater will answer the one they care about.
+
+---
+
+## Session 8 (2026-11-25): Choosing for fun, and a hard content filter
+
+**Model:** Claude Opus 5.5 in Claude Code.
+**Branch:** `feat/fun-selection`.
+
+Acting on Andy's ratings, Claude added:
+
+- fun ranking by comparison
+- a "match the wow" rule and an avoid list for lies
+- a plausibility floor of 2
+
+A fresh batch went through every stage and onto a rating page (ADR 0009).
+
+### A miss that mattered
+
+Andy found a card about a school's Nazi-themed parade. Every safeguard had depended on a model
+noticing, and none did:
+
+- Haiku's flags didn't name extremism.
+- Its politics flag covered only 30 years.
+- The fun ranker called it "fine".
+- The page had no "not OK" option.
+
+The fix is a code-level filter for extremism, atrocities and racism at every stage, plus
+broader model flags and a "Not OK" button. The test suite includes a statement shaped like
+the one that got through (ADR 0010).
+
+### Lessons
+
+- **Layer safeguards that fail in different ways.** Three model checks missed it for the same
+  underlying reason: none was asked about the topic. A keyword list is crude, but it fails
+  differently.
+- **Give reviewers a way to say "no".** A scale without "not appropriate" turns a content
+  problem into a quality score and hides it.
+
+### Follow-up: correcting the plausibility floor
+
+Andy rated the fresh batch on the two-question page. Two findings changed the plan:
+
+- **The "wow" rule overshot.** The lies were rated great for the game 90% of the time, but
+  believable only 2.3 out of 5, so they'd be easy to spot. The rule now says "no less, and no
+  more".
+- **The model's plausibility now matched Andy to within 0.1 points.** The earlier "too harsh"
+  finding came mostly from the mixed scale. Claude had lowered the floor to 2 on that
+  evidence and put it back to 3 in the same PR.
+
+Andy also allowed military history that isn't about killing, atrocities or politics.
+
+**Lesson:** a measurement taken with a flawed instrument can point the wrong way. Recheck an
+earlier conclusion once the instrument is fixed.

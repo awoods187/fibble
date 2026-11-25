@@ -5,6 +5,7 @@ import {
   buildRatingPage,
   buildRatingSet,
   embedJson,
+  filterForRating,
   RatingsFileSchema,
   seededShuffle,
 } from './page';
@@ -105,7 +106,7 @@ describe('ratingReport', () => {
       { id: idOf('dyk-1'), plausibility: 4, fun: 'great', knew: false },
       { id: idOf('dyk-2'), plausibility: 5, fun: 'boring', knew: true },
       { id: idOf('lie-abc'), plausibility: 4, fun: 'fine', knew: false },
-      { id: idOf('lie-def'), plausibility: 2, knew: false },
+      { id: idOf('lie-def'), plausibility: 1, knew: false },
     ],
   });
   const report = ratingReport(
@@ -120,13 +121,13 @@ describe('ratingReport', () => {
   it('summarises truths and lies, leaving out statements the rater already knew', () => {
     expect(report).toMatchObject({ rated: 4, knewExcluded: 1 });
     expect(report.truths).toMatchObject({ n: 1, mean: 4, passRate: 1 });
-    expect(report.lies).toMatchObject({ n: 2, mean: 3, passRate: 0.5, dist: { 2: 1, 4: 1 } });
+    expect(report.lies).toMatchObject({ n: 2, mean: 2.5, passRate: 0.5, dist: { 1: 1, 4: 1 } });
   });
 
   it('compares the model with the human on each lie', () => {
     expect(report).toMatchObject({
       compared: 2,
-      meanModelMinusHuman: -1,
+      meanModelMinusHuman: -0.5,
       bothPass: 0,
       humanOnlyPass: 1,
       modelOnlyPass: 0,
@@ -166,5 +167,50 @@ describe('two-question page', () => {
     }
     // The v1 label that mixed believability with being interesting is gone.
     expect(html).not.toContain('Surprising but real-sounding');
+  });
+});
+
+describe('ranker vs human', () => {
+  const set = buildRatingSet(TRUTHS, LIES, 'seed-1');
+  const idOf = (sourceId: string) =>
+    Object.entries(set.key).find(([, v]) => v.sourceId === sourceId)?.[0] ?? '';
+  it('cross-tabulates the ranker tier against the human fun rating', () => {
+    const ratings = RatingsFileSchema.parse({
+      setId: set.setId,
+      ratedAt: 'x',
+      ratings: [
+        { id: idOf('dyk-1'), plausibility: 4, fun: 'great', knew: false },
+        { id: idOf('dyk-2'), plausibility: 4, fun: 'boring', knew: false },
+      ],
+    });
+    const tiers = new Map<string, 'great' | 'fine' | 'boring'>([
+      ['dyk-1', 'great'],
+      ['dyk-2', 'great'],
+    ]);
+    expect(ratingReport(set.key, ratings, new Map(), tiers).rankerVsHuman).toEqual({
+      great: { great: 1, fine: 0, boring: 1, 'not-ok': 0 },
+    });
+  });
+});
+
+describe('filterForRating', () => {
+  it('keeps banned topics away from the human rater, in truths, reveals, lies and lie notes', () => {
+    const t1 = truth('ok', 'A lighthouse ran on candles until 1931.');
+    const t2 = {
+      ...truth('bad', 'A school parade went badly wrong in 2016.'),
+      expansion: 'Students wore Nazi uniforms.',
+    };
+    const l1 = lie('lie-ok', 'A ferry paid rowers in brass tokens.');
+    const l2 = {
+      ...lie('lie-bad', 'A banquet was held in a castle.'),
+      lieNote: 'Plausible because of the massacre there.',
+    };
+    const out = filterForRating([t1, t2], [l1, l2]);
+    expect(out.truths.map((t) => t.candidateId)).toEqual(['ok']);
+    expect(out.lies.map((l) => l.id)).toEqual(['lie-ok']);
+    expect(out.skipped).toEqual([
+      'truth bad: Sensitive topic: extremism ("nazi")',
+      'lie lie-bad: Sensitive topic: atrocity ("massacre")',
+    ]);
   });
 });

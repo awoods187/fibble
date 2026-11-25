@@ -207,4 +207,26 @@ describe('rewordCandidates', () => {
     expect(requests).toHaveLength(2);
     expect(stats).toMatchObject({ notStarted: 2, accepted: 1 });
   });
+
+  it('rejects a hook on a banned topic before any LLM call', async () => {
+    const { rejected, requests } = await run(
+      [
+        candidate('c1', {
+          rawClaim: '... that students marched in Nazi uniforms in a school parade?',
+        }),
+      ],
+      [],
+    );
+    expect(requests).toEqual([]);
+    expect(rejected[0]).toMatchObject({ stage: 'filter', reasons: ['sensitive-topic'], usage: [] });
+  });
+
+  it('rejects a draft whose reveal touches a banned topic, without calling Opus', async () => {
+    const { rejected, requests } = await run(
+      [candidate('c1')],
+      [draftReply({ expansion: 'The lighthouse was later the site of a massacre.' })],
+    );
+    expect(requests).toHaveLength(1);
+    expect(rejected[0]).toMatchObject({ stage: 'checks', reasons: ['sensitive-topic'] });
+  });
 });
