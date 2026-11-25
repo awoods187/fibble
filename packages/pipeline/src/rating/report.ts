@@ -5,7 +5,7 @@ import type { FunLevel, RatingKeyEntry, RatingsFile } from './page';
  * Compare human believability ratings with the model's (ADR 0008). Two questions:
  *  1. Do humans find the lies as believable as the truths? If so, the lies are good
  *     and a rater that scores them much lower is miscalibrated.
- *  2. Where both rated a lie, how often do they agree on passing the 3+ floor?
+ *  2. Where both rated a lie, how often do they agree on passing the plausibility floor (MIN_PLAUSIBILITY)?
  * Ratings marked "knew" are excluded from both: they aren't blind judgments.
  * "Good for the game" (fun) is reported separately and counts every rating:
  * knowing a fact doesn't change whether it's fun.
@@ -44,6 +44,11 @@ export interface RatingReport {
   truths: GroupStats;
   lies: GroupStats;
   fun: { truths: FunStats; lies: FunStats };
+  /**
+   * For truths the ranker tiered: how the human rated each ranker tier.
+   * rankerVsHuman.great.great is "both said great". Empty when no tiers were given.
+   */
+  rankerVsHuman: Partial<Record<FunLevel, Record<FunLevel, number>>>;
   /** Lies rated by both a human and the model, blind ratings only. */
   compared: number;
   /** Mean of (model - human): negative means the model is harsher. */
@@ -85,7 +90,10 @@ export function ratingReport(
   ratings: RatingsFile,
   /** Model plausibility by lie id (the `sourceId` in the key). */
   model: Map<string, number>,
+  /** The ranker's fun tier by truth id, from `pnpm rank-truths`. */
+  rankerTiers: Map<string, FunLevel> = new Map(),
 ): RatingReport {
+  const rankerVsHuman: Partial<Record<FunLevel, Record<FunLevel, number>>> = {};
   const truthScores: number[] = [];
   const lieScores: number[] = [];
   const rows: LieComparison[] = [];
@@ -95,6 +103,11 @@ export function ratingReport(
     const entry = key[r.id];
     if (!entry) continue;
     if (r.fun) funBy[entry.expected].push(r.fun);
+    const rankerTier = rankerTiers.get(entry.sourceId);
+    if (r.fun && rankerTier) {
+      const row = (rankerVsHuman[rankerTier] ??= { boring: 0, fine: 0, great: 0 });
+      row[r.fun]++;
+    }
     if (r.knew) {
       knewExcluded++;
       continue;
@@ -114,6 +127,7 @@ export function ratingReport(
     truths: stats(truthScores),
     lies: stats(lieScores),
     fun: { truths: funStats(funBy.truth), lies: funStats(funBy.lie) },
+    rankerVsHuman,
     compared: rows.length,
     meanModelMinusHuman: rows.length
       ? rows.reduce((n, r) => n + (r.model - r.human), 0) / rows.length
