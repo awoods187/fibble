@@ -10,8 +10,12 @@ export const MODELS = {
   generateLies: 'claude-opus-5-5',
   /** Opus: does the source support every detail of the reworded truth? */
   entailment: 'claude-opus-5-5',
+  /** Haiku: turns a lie into 2 or 3 search queries for verification. */
+  verifyQueries: 'claude-haiku-5-5',
   /** Sonnet: reads retrieved evidence and labels a lie supported / contradicted / no evidence. */
   verifyJudge: 'claude-sonnet-5-5',
+  /** Sonnet: rates whether a statement is believable, from the statement alone. */
+  plausibility: 'claude-sonnet-5-5',
   /** Haiku: high-volume, low-stakes tagging (category, entities). */
   classify: 'claude-haiku-5-5',
   /** Haiku: first-draft rewording of harvested claims into house style. */

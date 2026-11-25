@@ -51,4 +51,13 @@ describe('example-v1 prompts', () => {
     });
     expect(`${p.system}${user}`).not.toMatch(/\{\{/);
   });
+
+  it.each(['verify-queries', 'verify-judge', 'plausibility'])(
+    '%s renders with every variable it uses',
+    async (name) => {
+      const p = await loadPrompt(EXAMPLE_PROMPTS_DIR, name);
+      const user = render(p.user, { statement: 's', evidence: 'e' });
+      expect(`${p.system}${user}`).not.toMatch(/\{\{/);
+    },
+  );
 });

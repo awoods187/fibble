@@ -8,6 +8,7 @@ import type {
   TraceSchema,
 } from './schemas';
 import type { RewordedTruthSchema } from './reword/schemas';
+import type { VerifiedLie } from './verify/schemas';
 
 /**
  * Typed contracts for the 7 pipeline stages in PRD section 5.
@@ -70,26 +71,7 @@ export interface LieCandidate {
 
 /* ---------- Stage 4: verify the lie is false ---------- */
 
-export type VerificationLabel = 'supported' | 'contradicted' | 'no-evidence';
-
-export interface Evidence {
-  url: string;
-  title: string;
-  snippet: string;
-  retrievedFrom: 'wikipedia-search' | 'web-search';
-}
-
-export interface VerifiedLie {
-  lie: LieCandidate;
-  evidence: Evidence[];
-  label: VerificationLabel;
-  /** 1 to 5: could a well-read adult believe it? PRD wants 3+. */
-  plausibility: number;
-  judgeRationale: string;
-  /** True only for contradicted or no-evidence with plausibility >= 3. */
-  passed: boolean;
-  trace: Trace;
-}
+export type { Evidence, LieInput, VerificationLabel, VerifiedLie } from './verify/schemas';
 
 /* ---------- Stage 5: assemble and calibrate ---------- */
 
