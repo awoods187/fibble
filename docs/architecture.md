@@ -99,8 +99,10 @@ The app depends on a `ContentSource` interface, not on storage:
    schema (`pnpm validate:content path/to/bank`).
 3. A nightly GitHub Action upserts **today through today + 3** into the production database.
    The buffer covers a failed run; the API's date gate keeps future days hidden.
-4. Secrets (Anthropic API key, database URL, search API key) live in GitHub Actions secrets
-   and Vercel environment variables, never in either repo.
+4. Secrets (database URL, search API key) live in GitHub Actions secrets and Vercel
+   environment variables, never in either repo. Claude access needs no stored key: `ant auth
+login` locally and workload identity federation in Actions
+   ([ADR 0005](adr/0005-verification-search-and-keyless-auth.md)).
 
 ## Pipeline and models
 
