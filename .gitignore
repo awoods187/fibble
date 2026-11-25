@@ -164,6 +164,9 @@ vite.config.ts.timestamp-*
 # Build and cache output
 .turbo
 .next
+.cache/
+# Pipeline output (candidates, runs)
+out/
 next-env.d.ts
 
 # Real puzzle data lives in the private fibble-content repo, never here

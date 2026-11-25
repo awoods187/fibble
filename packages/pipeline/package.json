@@ -2,7 +2,7 @@
   "name": "@fibble/pipeline",
   "version": "0.0.0",
   "private": true,
-  "description": "Offline content pipeline: harvest, reword, generate lies, verify, assemble, dedupe, review. Skeleton only.",
+  "description": "Offline content pipeline: harvest, reword, generate lies, verify, assemble, dedupe, review. Harvest is built; later stages are typed stubs.",
   "license": "AGPL-3.0-only",
   "type": "module",
   "exports": {
@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "validate:content": "tsx scripts/validate-content.ts"
+    "validate:content": "tsx scripts/validate-content.ts",
+    "harvest": "tsx scripts/harvest.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "catalog:",
