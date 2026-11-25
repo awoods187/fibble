@@ -3,3 +3,4 @@ export * from './dates';
 export * from './public';
 export * from './schema';
 export * from './share';
+export * from './game';
