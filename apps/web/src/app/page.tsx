@@ -1,5 +1,6 @@
 import { connection } from 'next/server';
 import { Game } from '@/components/game/Game';
+import { SiteFooter } from '@/components/SiteFooter';
 import { getContentSource } from '@/lib/content';
 import { getTodaysPublicPuzzle } from '@/lib/todays-puzzle';
 
@@ -19,16 +20,7 @@ export default async function HomePage() {
 
       <Game initialPuzzle={puzzle} />
 
-      <footer className="mt-auto text-center text-xs text-silver-500">
-        Facts adapted from Wikipedia,{' '}
-        <a
-          className="underline underline-offset-2 hover:text-silver-300"
-          href="https://creativecommons.org/licenses/by-sa/4.0/"
-        >
-          CC BY-SA 4.0
-        </a>
-        .
-      </footer>
+      <SiteFooter />
     </main>
   );
 }

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>Fibble</title>
+  <defs>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4f5f7"/>
+      <stop offset="0.5" stop-color="#a8adb6"/>
+      <stop offset="1" stop-color="#6e737c"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#0a0a0b"/>
+  <!-- Three cards: two silver truths fanned behind, the fib in front with a red edge. -->
+  <rect x="150" y="118" width="196" height="262" rx="28" fill="#1c1c1f" stroke="#8a8f98" stroke-width="6" transform="rotate(-14 248 249)"/>
+  <rect x="166" y="118" width="196" height="262" rx="28" fill="#1c1c1f" stroke="#b8bcc4" stroke-width="6" transform="rotate(7 264 249)"/>
+  <rect x="158" y="132" width="196" height="262" rx="28" fill="url(#metal)" stroke="#e5484d" stroke-width="8"/>
+  <path d="M214 196h92v30h-58v34h50v30h-50v58h-34z" fill="#0a0a0b"/>
+</svg>
