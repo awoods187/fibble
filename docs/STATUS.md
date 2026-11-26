@@ -3,20 +3,20 @@
 The single place to see where Fibble is. **Update it in every PR that changes the picture.**
 Numbers only: real truths, lies and rounds stay in the private `fibble-content` repo.
 
-_Last updated: 2026-11-25 (game feel G2 PR)._
+_Last updated: 2026-11-25 (PWA and About G3 PR)._
 
 ## Where we are
 
 **Phase:** private launch, **2026-11-25 = Fibble #1**. The pipeline runs from Wikipedia to bank
 days (stages 1–5, review, day assembly).
-The game plays a full day by swipe, tap, keys or list view, with motion and haptics (G1, G2). Hosting is built but waiting on Vercel.
-Next: the PWA and About page (G3), and the first real days (a paid batch plus Andy's review).
+The game plays a full day by swipe, tap, keys or list view, with motion and haptics, and installs as an app (G1–G3). Hosting is built but waiting on Vercel.
+Next: and the first real days (a paid batch plus Andy's review).
 
 | Area               | State                                                                                                                                                                                         |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Repos              | `fibble` (public, `main` protected, CI required) · `fibble-content` (private, honor-system merges on GitHub Free)                                                                             |
 | Security           | Keyless Claude auth; secret scanning (GitHub on public, `check:secrets` + pre-commit hook on private); SHA-pinned actions; security headers; banned-topic filter ([security.md](security.md)) |
-| Web app            | Plays a full day: splash and how-to, 5 rounds (swipe, tap, keys 1–3/T/L, list view), flip reveal, results, share, local streaks, resume, haptics                                              |
+| Web app            | Full day by swipe, tap, keys or list view; flip reveal; results; share; streaks; haptics. Installable PWA with an offline page, About page with attribution, nonce-based CSP                  |
 | Content in `bank/` | **None yet.** No day has been assembled or reviewed                                                                                                                                           |
 | Hosting            | Neon ready (roles checked); app reads it when `DATABASE_URL` is set (ADR 0012). **Vercel blocked:** the account email needs Vercel support                                                    |
 
@@ -62,7 +62,8 @@ Next: the PWA and About page (G3), and the first real days (a paid batch plus An
 1. **Content** _(code done)_: a paid batch of about 35 rounds (7 per category, capped at $15),
    Andy reviews them, then `build-days` writes about 7 days to `bank/`.
 2. **Hosting** _(built)_: finish the Vercel setup once support replies, then the smoke test.
-3. **Game:** G1 (play loop) and G2 (swipes, motion, haptics) done. G3: PWA and About page.
+3. **Game:** done for the prototype (G1 play loop, G2 swipes and motion, G3 PWA and About).
+   Report-a-problem, analytics and global stats wait for hosting.
 
 ## Waiting on Andy
 

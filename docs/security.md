@@ -66,6 +66,10 @@ The API is public by design: players' browsers call it. What protects it:
   `Cache-Control: no-store` and `X-Robots-Tag: noindex`.
 - Security headers on every page: no framing, no MIME sniffing, strict referrers, HSTS, and
   no `X-Powered-By`.
+- A strict, nonce-based Content-Security-Policy on every page (`src/proxy.ts`,
+  `pageCsp` in `src/lib/security/headers.ts`): scripts run only with that request's random
+  nonce, everything else loads from our own origin. The API and static files keep the
+  baseline policy. The service worker (`public/sw.js`) never caches the API.
 - `robots.txt` keeps all crawlers off `/api/` and blocks AI training crawlers site-wide;
   `ai.txt` and `llms.txt` ask agents not to fetch or reveal answers. These are voluntary.
 
@@ -75,7 +79,6 @@ The API is public by design: players' browsers call it. What protects it:
 | --------------------------------------------------------- | ---------------------------------------------------------------- |
 | Anyone can POST every choice to a round and learn the lie | One graded answer per round per player, once the database exists |
 | No rate limiting                                          | Vercel firewall rate limit on `/api/*` at first deploy           |
-| No script-src Content-Security-Policy                     | Nonce-based CSP with the PWA shell                               |
 | `fibble-content` `main` isn't protected (GitHub Free)     | GitHub Pro, or keep the honor system                             |
 | `robots.txt`, `ai.txt` and `llms.txt` can be ignored      | Rate limiting and bot rules at the edge                          |
 
