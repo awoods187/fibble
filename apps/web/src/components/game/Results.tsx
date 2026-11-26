@@ -15,6 +15,7 @@ import {
 } from '@fibble/shared';
 import { useState } from 'react';
 import { Countdown } from './Countdown';
+import { HapticsToggle } from './HapticsToggle';
 
 interface Props {
   puzzle: PublicPuzzle;
@@ -116,6 +117,7 @@ export function Results({ puzzle, game, stats, today }: Props) {
           </pre>
         )}
         <Countdown />
+        <HapticsToggle />
       </div>
 
       <dl className="grid w-full grid-cols-4 gap-2 text-center">

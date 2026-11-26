@@ -10,7 +10,7 @@ model, and approved by a human. The product requirements live in `docs/PRD.md`, 
 **git-ignored and local only**. Ask Andy for a copy if it's missing; never commit it.
 
 Status: pre-alpha. See `docs/STATUS.md`. The pipeline (stages 1 to 7) and the database are built; the game
-plays a full day by tap, keys and list view. Swipes and motion (G2) and the PWA shell (G3) are not.
+plays a full day by swipe, tap, keys and list view, with motion and haptics. The PWA shell (G3) is not.
 
 ## Commands
 

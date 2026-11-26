@@ -507,3 +507,16 @@ packages), at desktop, mobile and list-view sizes. That run caught three bugs th
 couldn't: React's development double-run made a first visit look like a return visit, the
 stacked cards behind the top card sat above it (a `relative` class beat `absolute`), and the
 test's own read during a reload. All three modes now finish a day with no page errors.
+
+### Follow-up: game feel (G2)
+
+Swipes, motion and haptics from PRD section 7. The numbers (12° tilt, tint from 10% to 30% of
+width, commit at 30% or 0.6 px/ms, the haptic patterns) are pure functions in
+`@fibble/shared/swipe.ts` with unit tests; the card only measures the pointer. The buttons play
+the same animation, the last card rubber-bands back on Truth, the reveal flips the lie first
+and stamps it, and reduced motion swaps flights for fades.
+
+The headless-Chrome run (now with real pointer drags and a recording `navigator.vibrate`)
+caught a fling bug the first unit tests missed: Chrome bunches pointer moves, so two samples a
+few milliseconds apart made a slow drag look like a fling, and a pause before release still
+counted. Velocity is now measured over ~100 ms including the release, with a test for each case.
