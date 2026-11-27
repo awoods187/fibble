@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  articleHistoryUrl,
   buildShareText,
   CATEGORIES,
   displayedStreak,
@@ -171,6 +172,14 @@ export function Results({ puzzle, game, stats, today }: Props) {
                   className="mt-2 inline-block text-xs text-silver-300 underline underline-offset-4"
                 >
                   Wikipedia: {t.source.title} ↗
+                </a>
+                <a
+                  href={articleHistoryUrl(t.source)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 ml-3 inline-block text-xs text-silver-500 underline underline-offset-4"
+                >
+                  Authors
                 </a>
               </li>
             )),

@@ -520,3 +520,18 @@ The headless-Chrome run (now with real pointer drags and a recording `navigator.
 caught a fling bug the first unit tests missed: Chrome bunches pointer moves, so two samples a
 few milliseconds apart made a slow drag look like a fling, and a pause before release still
 counted. Velocity is now measured over ~100 ms including the release, with a test for each case.
+
+### Follow-up: PWA, About and a strict CSP (G3)
+
+The app installs (manifest, SVG and PNG icons, maskable and Apple icons rendered from one SVG
+with local headless Chrome, no image packages) and has an offline page from a small service
+worker that caches build files and icons but never the API. The About page covers how to
+play, where facts come from, attribution under CC BY-SA 4.0 (with links to each article's
+history), the AGPL code, and privacy. The planned nonce-based CSP landed with it, following
+the Next.js guide in `node_modules/next/dist/docs`, with two app-specific changes: inline style
+attributes are allowed (the swipe card's transform), and development drops the nonce from
+`style-src` because browsers ignore `'unsafe-inline'` next to a nonce.
+
+Checked against a production build: one strict policy per page with a fresh nonce on all 18
+inline scripts, full days played in three modes with no CSP violations, the worker installing and
+controlling the page, and the offline page appearing when the server was stopped.

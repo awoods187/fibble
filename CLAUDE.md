@@ -10,7 +10,7 @@ model, and approved by a human. The product requirements live in `docs/PRD.md`, 
 **git-ignored and local only**. Ask Andy for a copy if it's missing; never commit it.
 
 Status: pre-alpha. See `docs/STATUS.md`. The pipeline (stages 1 to 7) and the database are built; the game
-plays a full day by swipe, tap, keys and list view, with motion and haptics. The PWA shell (G3) is not.
+plays a full day by swipe, tap, keys and list view, with motion and haptics, and installs as a PWA. Reporting, analytics and global stats are not built.
 
 ## Commands
 
@@ -51,6 +51,7 @@ Scope to one package with `pnpm --filter @fibble/web test` (or `@fibble/shared`,
 | `packages/pipeline/` | Typed stages (`src/stages/`), harvest (`src/harvest/`), record schemas (`src/schemas.ts`), `models.ts`, `prompts/example-v1/`, `evals/`          |
 | `tools/review/`      | Placeholder for the local review UI                                                                                                              |
 | `tools/security/`    | `check:secrets` scanner and repo guard tests (see `docs/security.md`)                                                                            |
+| `tools/icons/`       | `render-icons.mjs`: renders `apps/web/public/icons/icon.svg` to the PNG app icons with local Chrome                                              |
 | `content-example/`   | Three sample days, `"sample": true`                                                                                                              |
 | `docs/`              | `architecture.md`, `adr/`, `ai-development.md` (and the local-only `PRD.md`)                                                                     |
 

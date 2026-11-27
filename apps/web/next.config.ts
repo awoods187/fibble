@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
     return [
       { source: '/:path*', headers: SECURITY_HEADERS },
       { source: '/api/:path*', headers: API_HEADERS },
+      // The service worker must be re-checked on every visit, or updates would stall.
+      {
+        source: '/sw.js',
+        headers: [{ key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' }],
+      },
     ];
   },
 };
