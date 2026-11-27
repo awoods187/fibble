@@ -28,6 +28,40 @@ export const UNUSUAL_TOPICS: Record<string, Category> = {
 };
 
 /**
+ * Split a --topics value on commas, keeping topic names that contain a comma whole
+ * ("Technology, inventions and products"). Unknown names pass through for the caller to reject.
+ */
+export function parseTopics(value: string): string[] {
+  const names = Object.keys(UNUSUAL_TOPICS);
+  const startsName = (prefix: string) => names.some((n) => n.startsWith(`${prefix},`));
+  const out: string[] = [];
+  let pending = '';
+  const take = (piece: string) => {
+    if (names.includes(piece) || !startsName(piece)) out.push(piece);
+    else pending = piece;
+  };
+  for (const piece of value
+    .split(',')
+    .map((p) => p.trim())
+    .filter(Boolean)) {
+    if (!pending) {
+      take(piece);
+      continue;
+    }
+    const joined = `${pending}, ${piece}`;
+    pending = '';
+    if (names.includes(joined)) out.push(joined);
+    else if (startsName(joined)) pending = joined;
+    else {
+      out.push(joined.slice(0, joined.length - piece.length - 2)); // the unfinished name, as typed
+      take(piece);
+    }
+  }
+  if (pending) out.push(pending);
+  return out;
+}
+
+/**
  * Subpages never harvested: their topics are banned or sensitive (ADR 0010), or they
  * aren't article lists. Recorded so the choice is deliberate.
  */

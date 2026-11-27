@@ -8,6 +8,7 @@ import {
   parseUnusualTable,
   UNUSUAL_TOPICS,
   unusualCandidateId,
+  parseTopics as parse,
 } from './unusual';
 import type { ArticleData, WikiClient } from './wiki-client';
 
@@ -134,5 +135,27 @@ describe('harvestUnusual', () => {
     await expect(
       harvestUnusual({ topics: ['Death'], limit: 1, seed: 's' }, CTX, client),
     ).rejects.toThrow(/excluded/);
+  });
+});
+
+describe('parseTopics', () => {
+  it('keeps topic names that contain a comma whole', () => {
+    expect(parse('Sports,Technology, inventions and products,History')).toEqual([
+      'Sports',
+      'Technology, inventions and products',
+      'History',
+    ]);
+    expect(parse('Popular culture, entertainment and the arts')).toEqual([
+      'Popular culture, entertainment and the arts',
+    ]);
+    expect(parse('Technology,inventions and products')).toEqual([
+      'Technology, inventions and products',
+    ]);
+  });
+
+  it('passes unknown or unfinished names through so validation rejects them', () => {
+    expect(parse('Sports, Nope')).toEqual(['Sports', 'Nope']);
+    expect(parse('Technology, Sports')).toEqual(['Technology', 'Sports']);
+    expect(parse('Technology')).toEqual(['Technology']);
   });
 });
