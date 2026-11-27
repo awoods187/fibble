@@ -28,6 +28,7 @@ import { dirname, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { z } from 'zod';
 import {
+  avoidList,
   DEFAULT_LIE_COUNT,
   GENERATE_MAX_TOKENS,
   gate2Report,
@@ -122,6 +123,7 @@ if (args['dry-run']) {
           truth_1: first[0].text,
           truth_2: first[1].text,
           count: String(args.count),
+          avoid: avoidList([]),
         }),
     );
   }

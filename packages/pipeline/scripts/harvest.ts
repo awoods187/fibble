@@ -7,7 +7,8 @@
  * Options:
  *   --source   dyk (default) | unusual-articles
  *   --months   DYK: comma-separated YYYY-MM archive months
- *   --topics   Unusual articles: comma-separated topic subpages (default: all usable topics)
+ *   --topics   Unusual articles: comma-separated topic subpages (default: all usable topics);
+ *              names with a comma, like "Technology, inventions and products", work as is
  *   --seed     Unusual articles: which entries are sampled (default: today's date)
  *   --skip     Unusual articles: a JSONL of earlier candidates whose articles to skip
  *   --limit    DYK: stop after this many candidates; Unusual articles: per topic (default 50)
@@ -23,7 +24,7 @@ import { dirname, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { z } from 'zod';
 import { harvestDyk } from '../src/harvest/run';
-import { harvestUnusual, UNUSUAL_TOPICS } from '../src/harvest/unusual';
+import { harvestUnusual, parseTopics, UNUSUAL_TOPICS } from '../src/harvest/unusual';
 import { WikiClient } from '../src/harvest/wiki-client';
 import { HarvestMonthSchema } from '../src/schemas';
 
@@ -61,7 +62,7 @@ const Args = z.discriminatedUnion('source', [
     topics: z
       .string()
       .optional()
-      .transform((s) => (s ? list(s) : Object.keys(UNUSUAL_TOPICS)))
+      .transform((s) => (s ? parseTopics(s) : Object.keys(UNUSUAL_TOPICS)))
       .pipe(z.array(z.enum(Object.keys(UNUSUAL_TOPICS) as [string, ...string[]])).min(1)),
     seed: z.string().optional(),
     skip: z.string().optional(),
