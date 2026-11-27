@@ -101,6 +101,7 @@ if (args['dry-run']) {
           hook: first.rawClaim,
           article_title: first.article.title,
           evidence: first.contextText,
+          category_hint: first.categoryHint ?? 'none',
         }),
     );
   }
