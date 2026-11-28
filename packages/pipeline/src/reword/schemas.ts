@@ -96,6 +96,7 @@ export const REJECTION_REASONS = [
   'refusal',
   'max-tokens',
   'unparseable',
+  'api-error',
   'length',
   'hedging',
   'expansion',
