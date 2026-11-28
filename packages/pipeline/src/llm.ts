@@ -29,7 +29,8 @@ export type StructuredResult<T> =
   | { ok: true; output: T; usage: CallUsage }
   | {
       ok: false;
-      reason: 'refusal' | 'max-tokens' | 'unparseable';
+      /** api-error: the call never completed (timeout, dropped connection, server error). */
+      reason: 'refusal' | 'max-tokens' | 'unparseable' | 'api-error';
       detail?: string;
       usage: CallUsage;
     };
@@ -60,6 +61,19 @@ export function toCallUsage(model: ModelId, u: RawUsage): CallUsage {
 }
 
 /**
+ * Errors worth skipping past: timeouts, dropped connections, rate limits and server errors.
+ * Anything else (bad request, auth, permission) is a bug or a setup problem, so it stops the run.
+ */
+export function isTransient(err: unknown): boolean {
+  if (err instanceof Anthropic.APIConnectionError) return true; // includes timeouts
+  if (err instanceof Anthropic.APIError) {
+    const s = err.status ?? 0;
+    return s === 408 || s === 409 || s === 429 || s >= 500;
+  }
+  return false;
+}
+
+/**
  * Real client. `new Anthropic()` resolves credentials itself: the `ant auth login`
  * profile locally, workload identity federation in CI. Never pass an API key here.
  */
@@ -75,23 +89,41 @@ export class AnthropicLlmClient implements LlmClient {
     ];
     const messages = [{ role: 'user' as const, content: req.user }];
 
-    const response = FALLBACK_MODELS.has(req.model)
-      ? await this.client.beta.messages.parse({
-          model: req.model,
-          max_tokens: req.maxTokens,
-          system,
-          messages,
-          output_config: { effort: req.effort, format: betaZodOutputFormat(req.schema) },
-          betas: [FALLBACK_BETA],
-          fallbacks: 'default',
-        })
-      : await this.client.messages.parse({
-          model: req.model,
-          max_tokens: req.maxTokens,
-          system,
-          messages,
-          output_config: { effort: req.effort, format: zodOutputFormat(req.schema) },
-        });
+    // Streamed, so a long Opus answer can't hit the SDK's connection timeout; finalMessage()
+    // returns the parsed structured output. A call that still fails (after the SDK's own
+    // retries) is reported as api-error, so one bad call drops one item, not the whole run.
+    let response;
+    try {
+      response = FALLBACK_MODELS.has(req.model)
+        ? await this.client.beta.messages
+            .stream({
+              model: req.model,
+              max_tokens: req.maxTokens,
+              system,
+              messages,
+              output_config: { effort: req.effort, format: betaZodOutputFormat(req.schema) },
+              betas: [FALLBACK_BETA],
+              fallbacks: 'default',
+            })
+            .finalMessage()
+        : await this.client.messages
+            .stream({
+              model: req.model,
+              max_tokens: req.maxTokens,
+              system,
+              messages,
+              output_config: { effort: req.effort, format: zodOutputFormat(req.schema) },
+            })
+            .finalMessage();
+    } catch (err) {
+      if (!isTransient(err)) throw err;
+      return {
+        ok: false,
+        reason: 'api-error',
+        detail: err instanceof Error ? err.constructor.name : 'unknown',
+        usage: toCallUsage(req.model, { input_tokens: 0, output_tokens: 0 }),
+      };
+    }
 
     const usage = toCallUsage(req.model, response.usage);
     if (response.stop_reason === 'refusal') {
